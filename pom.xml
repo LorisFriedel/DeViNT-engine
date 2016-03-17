@@ -6,7 +6,7 @@
 	<artifactId>devint-engine</artifactId>
 	<packaging>jar</packaging>
 	<version>1.1-SNAPSHOT</version>
-	<name>DeViNT framework</name>
+	<name>DeViNT Engine</name>
 	<url>http://polytech.unice.fr</url>
 
 	<properties>
@@ -15,15 +15,15 @@
 		<compiler.target>1.8</compiler.target>
 	</properties>
 	
-	<!--
+	
     <repositories>
         <repository>
-            <id>devint-nexus</id>
-            <name>devint-framework</name>
-            <url>http://ns333808.ip-37-187-127.eu/nexus/content/repositories/snapshots/</url>
+            <id>devint-repo</id>
+            <name>devint-engine</name>
+            <url>https://mymavenrepo.com/repo/N3WVdAIetPqMO0ZH6X5e/devint/</url>
         </repository>
     </repositories>
-	-->
+	
 
 	<dependencies>
 		<!--
