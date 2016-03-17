@@ -13,9 +13,8 @@ import polytech.devint.view.DevintView;
 import polytech.devint.view.DisplayConfiguration;
 
 /**
- * @param <V>
+ * @param <M>
  * @author Loris Friedel
- * @author Günther Jungbluth (gunther.jungbluth.poirier@gmail.com)
  */
 public abstract class DevintController<M extends Model, V extends DevintView<M>>
         extends Controller<M, V> {
