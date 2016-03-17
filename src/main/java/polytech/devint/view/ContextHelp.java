@@ -12,10 +12,10 @@ import java.util.Optional;
  */
 public class ContextHelp {
 
-  private String text;
+  private Optional<String> text;
   private Optional<Sound> audio;
 
-  private String detailedText;
+  private Optional<String> detailedText;
   private Optional<Sound> detailedAudio;
 
   private Timeout timerHelp;
@@ -25,7 +25,7 @@ public class ContextHelp {
    * Instantiate a default context help, empty.
    */
   public ContextHelp() {
-    this("", null, "", null);
+    this(null, null, null, null);
   }
 
   /**
@@ -38,12 +38,12 @@ public class ContextHelp {
    * @param detailedAudioHelp the audio of the detailed help (a voice recording for example)
    */
   private ContextHelp(String text, Sound audioHelp, String detailedText, Sound detailedAudioHelp) {
-    this.text = text;
+    this.text = Optional.ofNullable(text);
     this.audio = Optional.ofNullable(audioHelp);
-    this.detailedText = detailedText;
+    this.detailedText = Optional.ofNullable(detailedText);
     this.detailedAudio = Optional.ofNullable(detailedAudioHelp);
     this.timerHelp = new Timeout(audio.isPresent() ? audio.get().getDuration() : 0);
-    this.timerDetailedHelp =  new Timeout(detailedAudio.isPresent() ? detailedAudio.get().getDuration() : 0);
+    this.timerDetailedHelp = new Timeout(detailedAudio.isPresent() ? detailedAudio.get().getDuration() : 0);
   }
 
   /**
@@ -77,7 +77,7 @@ public class ContextHelp {
    * @param audio the audio of the help (a voice recording for example)
    */
   public ContextHelp(String text, Sound audio) {
-    this(text, audio, "", null);
+    this(text, audio, null, null);
   }
 
   /**
@@ -87,20 +87,20 @@ public class ContextHelp {
    * @param text help text of the context
    */
   public ContextHelp(String text) {
-    this(text, null, "", null);
+    this(text, null, null, null);
   }
 
   /**
    * @return the help text of this context
    */
-  public String getText() {
+  public Optional<String> getText() {
     return text;
   }
 
   /**
    * @return the detailed help of this context
    */
-  public String getDetailedText() {
+  public Optional<String> getDetailedText() {
     return detailedText;
   }
 
@@ -111,7 +111,9 @@ public class ContextHelp {
     if (audio.isPresent()) {
       timerHelp.tryTo(() -> audio.get().play());
     } else {
-      // TODO : synthesis.playText(text)
+      if (text.isPresent()) {
+        // TODO : synthesis.playText(text)
+      }
     }
   }
 
@@ -122,12 +124,14 @@ public class ContextHelp {
     if (detailedAudio.isPresent()) {
       timerDetailedHelp.tryTo(() -> detailedAudio.get().play());
     } else {
-      // TODO : synthesis.playText(detailedText)
+      if (detailedText.isPresent()) {
+        // TODO : synthesis.playText(detailedText)
+      }
     }
   }
 
   public void updateText(String text) {
-    this.text = text;
+    this.text = Optional.ofNullable(text);
   }
 
   public void updateAudio(Sound audio) {
@@ -135,7 +139,7 @@ public class ContextHelp {
   }
 
   public void updateDetailedText(String detailedText) {
-    this.detailedText = detailedText;
+    this.detailedText = Optional.ofNullable(detailedText);
   }
 
   public void updateDetailedAudio(Sound detailedAudio) {
