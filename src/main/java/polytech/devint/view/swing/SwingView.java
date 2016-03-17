@@ -177,7 +177,7 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
    *
    * @param label label to update
    */
-  private void updateLabel(JLabel label) {
+  protected void updateLabel(JLabel label) {
     updateLabelForeground(label);
     updateLabelFont(label);
   }
@@ -188,7 +188,7 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
    *
    * @param label label to update its foreground color
    */
-  private void updateLabelForeground(JLabel label) {
+  protected void updateLabelForeground(JLabel label) {
     // Text (foreground) color update
     label.setForeground(
             DisplayConfiguration.getDefaultDisplay().getCurrentPalette().getForegroundColor1());
@@ -200,7 +200,7 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
    *
    * @param label label to update its font
    */
-  private void updateLabelFont(JLabel label) {
+  protected void updateLabelFont(JLabel label) {
     // Font update
     label.setFont(
             getUpdatedFont(label.getFont()));
@@ -211,7 +211,7 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
    *
    * @param panel panel to update its background color
    */
-  private void updatePanelColor(JPanel panel) {
+  protected void updatePanelColor(JPanel panel) {
     // Background color update
     panel.setBackground(
             DisplayConfiguration.getDefaultDisplay().getCurrentPalette().getBackgroundColor1());
