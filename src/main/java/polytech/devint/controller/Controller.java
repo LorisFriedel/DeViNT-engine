@@ -81,6 +81,15 @@ public abstract class Controller<M extends Model, V extends View<M>> {
   }
 
   /**
+   * Send a notification to the current controller.
+   *
+   * @param event event to send to itself
+   */
+  public void notifySelf(Event event) {
+    getEventManager().notify(event);
+  }
+
+  /**
    * Change the model linked to the current controller.
    * This method should be used CAREFULLY.
    *
