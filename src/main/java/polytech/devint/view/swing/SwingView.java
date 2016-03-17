@@ -4,9 +4,7 @@ import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
 import polytech.devint.model.Model;
 import polytech.devint.view.ContextHelp;
@@ -168,5 +166,54 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
   protected Font getUpdatedFont(Font font) {
     return font.deriveFont(
             (float) DisplayConfiguration.getDefaultDisplay().getCurrentFont().getSize());
+  }
+
+  ///////////////////////////////////
+  ////// Generic update method //////
+  ///////////////////////////////////
+
+  /**
+   * Update the font and the foreground color of the given label
+   *
+   * @param label label to update
+   */
+  private void updateLabel(JLabel label) {
+    updateLabelForeground(label);
+    updateLabelFont(label);
+  }
+
+  /**
+   * Update the foreground color of the given label
+   * according to the current display configuration.
+   *
+   * @param label label to update its foreground color
+   */
+  private void updateLabelForeground(JLabel label) {
+    // Text (foreground) color update
+    label.setForeground(
+            DisplayConfiguration.getDefaultDisplay().getCurrentPalette().getForegroundColor1());
+  }
+
+  /**
+   * Update the font of the given label according
+   * to the current display configuration.
+   *
+   * @param label label to update its font
+   */
+  private void updateLabelFont(JLabel label) {
+    // Font update
+    label.setFont(
+            getUpdatedFont(label.getFont()));
+  }
+
+  /**
+   * Update the background color of the given panel
+   *
+   * @param panel panel to update its background color
+   */
+  private void updatePanelColor(JPanel panel) {
+    // Background color update
+    panel.setBackground(
+            DisplayConfiguration.getDefaultDisplay().getCurrentPalette().getBackgroundColor1());
   }
 }

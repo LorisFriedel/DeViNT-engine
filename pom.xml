@@ -15,15 +15,13 @@
 		<compiler.target>1.8</compiler.target>
 	</properties>
 	
-	
-    <repositories>
+	<distributionManagement>
         <repository>
             <id>devint-repo</id>
-            <name>devint-engine</name>
+			<name>devint-engine</name>
             <url>https://mymavenrepo.com/repo/N3WVdAIetPqMO0ZH6X5e/devint/</url>
         </repository>
-    </repositories>
-	
+    </distributionManagement>
 
 	<dependencies>
 		<!--
