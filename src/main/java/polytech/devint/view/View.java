@@ -36,7 +36,7 @@ public abstract class View<M extends Model> {
   /**
    * Initializes the view
    */
-  public final void init() {
+  public void init() {
     register();
     setupContent();
     controller.resetKeys();

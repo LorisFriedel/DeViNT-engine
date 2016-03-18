@@ -24,6 +24,20 @@ public abstract class DevintView<M extends Model> extends View<M> {
     return contextHelp;
   }
 
+  @Override
+  public void init() {
+    super.init();
+
+    playHelp();
+  }
+
+  @Override
+  public void destroy() {
+    super.destroy();
+
+    stopHelp();
+  }
+
   /**
    * Play the general help on the speaker
    */
@@ -36,5 +50,13 @@ public abstract class DevintView<M extends Model> extends View<M> {
    */
   public void playDetailedHelp() {
     contextHelp.playDetailed();
+  }
+
+  public void stopHelp() {
+    contextHelp.stopDetailed();
+  }
+
+  public void stopDetailedHelp() {
+    contextHelp.stopDetailed();
   }
 }

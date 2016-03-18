@@ -9,8 +9,8 @@ import javax.swing.*;
 import polytech.devint.model.Model;
 import polytech.devint.view.ContextHelp;
 import polytech.devint.view.DevintView;
-import polytech.devint.view.DisplayConfiguration;
-import polytech.devint.view.Palette;
+import polytech.devint.view.configuration.DisplayConfiguration;
+import polytech.devint.view.configuration.Palette;
 
 /**
  * Represents a Swing View

@@ -22,7 +22,7 @@ public abstract class RepeatableTask implements Runnable {
   public abstract void execute();
 
   /**
-   * @return The amount of time the execute() method has been called
+   * @return The amount of time the repeat() method has been called
    */
   public int getLoops() {
     return loops;

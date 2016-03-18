@@ -1,4 +1,4 @@
-package polytech.devint.view;
+package polytech.devint.view.sound;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,32 +12,38 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.apache.tika.Tika;
 
-import polytech.devint.scheduler.Scheduler;
 import polytech.devint.util.Identifiable;
-import polytech.devint.util.Timeout;
 import polytech.devint.view.exception.SoundInitializationFailedException;
 import polytech.devint.view.exception.SoundPlayException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
- * Represent a playable sound The sound data are stored (raw) such as it is faster to play it again,
+ * Represent a sound
+ * The sound data are stored (raw) such as it is faster to play it again,
  * it is not reloaded each play.
+ * To play a sound, a sound player must be used.
  *
  * @author Loris Friedel
- * @author Gunther
  */
-public class Sound extends Identifiable<Integer> implements Runnable {
+public class Sound extends Identifiable<Integer> {
 
   private static int nextId = 0;
 
-  private String name;
-  private AudioFormat format;
-  private SourceDataLine dataLine;
-  private byte[] soundData;
-  private int dataLength;
-  private long duration;
+  final ScheduledThreadPoolExecutor scheduler;
 
-  private static final String[] WAV_MIMETYPES =
-          {"audio/x-wav", "audio/vnd.wave", "audio/wav", "audio/wave"};
+  String name;
+  AudioFormat format;
+  SourceDataLine dataLine;
+  byte[] soundData;
+  int dataLength;
+  long duration;
+
+  private static final List<String> WAV_MIMETYPES =
+          Arrays.asList("audio/x-wav", "audio/vnd.wave", "audio/wav", "audio/wave");
+  private static final int MS_IN_ONE_SECOND = 1000;
+  private static final int DEFAULT_THREAD_POOL_FOR_SOUND = 2;
 
   /**
    * Create a playable sound from a .wav file
@@ -45,7 +51,7 @@ public class Sound extends Identifiable<Integer> implements Runnable {
    * @param waveFile the .wav file of the sound
    * @throws SoundInitializationFailedException if the sound cannot be properly initialized
    */
-  public Sound(final File waveFile) throws SoundInitializationFailedException {
+  public Sound(final File waveFile) {
     super(nextId++);
 
     try {
@@ -53,23 +59,23 @@ public class Sound extends Identifiable<Integer> implements Runnable {
         throw new SoundInitializationFailedException(waveFile.getName(), "Not a wav file");
       }
     } catch (IOException e) { // NOSONAR
-      throw new SoundInitializationFailedException(waveFile.getName(),
-              "Failed to detect file format");
+      throw new SoundInitializationFailedException(waveFile.getName(), "Failed to detect file format");
     }
 
     try (AudioInputStream inputStream = AudioSystem.getAudioInputStream(waveFile)) {
-      this.name = waveFile.getName();
+      this.name = waveFile.getName().replace(".wav", "");
       this.format = inputStream.getFormat();
       this.dataLine = AudioSystem.getSourceDataLine(format);
 
       this.soundData = new byte[inputStream.available()];
       this.dataLength = inputStream.read(soundData);
-      this.duration = (long) (1000 * (inputStream.getFrameLength() / format.getFrameRate()));
+      this.duration = (long) (MS_IN_ONE_SECOND * (inputStream.getFrameLength() / format.getFrameRate()));
 
     } catch (IOException | LineUnavailableException // NOSONAR
             | UnsupportedAudioFileException e) {
       throw new SoundInitializationFailedException(waveFile.getName());
     }
+    this.scheduler = new ScheduledThreadPoolExecutor(DEFAULT_THREAD_POOL_FOR_SOUND);
   }
 
   /**
@@ -78,15 +84,8 @@ public class Sound extends Identifiable<Integer> implements Runnable {
    * @param file file to test
    * @return true if the given file is a .wav audio file, false otherwise
    */
-  private static boolean isWave(File file) throws IOException {
-    Tika tika = new Tika();
-    String format = tika.detect(file);
-    for (String mimeType : WAV_MIMETYPES) {
-      if (mimeType.equals(format)) {
-        return true;
-      }
-    }
-    return false;
+  static boolean isWave(File file) throws IOException {
+    return WAV_MIMETYPES.contains(new Tika().detect(file));
   }
 
   /**
@@ -104,40 +103,30 @@ public class Sound extends Identifiable<Integer> implements Runnable {
   }
 
   /**
-   * Play the sound until the end of it
+   * @return the audio format of this sound
    */
-  public void play() {
-    Scheduler.getDefaultScheduler().execute(() -> {
-      if (!dataLine.isOpen()) {
-        try {
-          dataLine.open(format);
-        } catch (LineUnavailableException e) { // NOSONAR
-          throw new SoundPlayException();
-        }
-      }
-
-      dataLine.start();
-      dataLine.write(soundData, 0, dataLength);
-      dataLine.drain();
-      dataLine.stop();
-    });
+  public AudioFormat getFormat() {
+    return format;
   }
 
   /**
-   * Stop the sound being played and close the source data line
+   * @return the data line of this sound
    */
-  public void stop() {
-    Scheduler.getDefaultScheduler().execute(() -> {
-      if (dataLine.isOpen()) {
-        dataLine.stop();
-        dataLine.flush();
-        dataLine.close();
-      }
-    });
+  public SourceDataLine getDataLine() {
+    return dataLine;
   }
 
-  @Override
-  public void run() {
-    play();
+  /**
+   * @return the raw data of the sound
+   */
+  public byte[] getSoundData() {
+    return soundData;
+  }
+
+  /**
+   * @return the number of byte that composed this sound
+   */
+  public int getDataLength() {
+    return dataLength;
   }
 }

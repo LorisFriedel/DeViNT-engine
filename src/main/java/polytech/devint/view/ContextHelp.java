@@ -1,6 +1,6 @@
 package polytech.devint.view;
 
-import polytech.devint.util.Timeout;
+import polytech.devint.view.sound.Sound;
 
 import java.util.Optional;
 
@@ -17,9 +17,6 @@ public class ContextHelp {
 
   private Optional<String> detailedText;
   private Optional<Sound> detailedAudio;
-
-  private Timeout timerHelp;
-  private Timeout timerDetailedHelp;
 
   /**
    * Instantiate a default context help, empty.
@@ -42,8 +39,6 @@ public class ContextHelp {
     this.audio = Optional.ofNullable(audioHelp);
     this.detailedText = Optional.ofNullable(detailedText);
     this.detailedAudio = Optional.ofNullable(detailedAudioHelp);
-    this.timerHelp = new Timeout(audio.isPresent() ? audio.get().getDuration() : 0);
-    this.timerDetailedHelp = new Timeout(detailedAudio.isPresent() ? detailedAudio.get().getDuration() : 0);
   }
 
   /**
@@ -107,9 +102,9 @@ public class ContextHelp {
   /**
    * Play the help on speaker
    */
-  public void play() {
+  public void play() { // TODO To remove
     if (audio.isPresent()) {
-      timerHelp.tryTo(() -> audio.get().play());
+      audio.get().play();
     } else {
       if (text.isPresent()) {
         // TODO : synthesis.playText(text)
@@ -120,13 +115,25 @@ public class ContextHelp {
   /**
    * Play the detailed help on speaker
    */
-  public void playDetailed() {
+  public void playDetailed() { // TODO To remove
     if (detailedAudio.isPresent()) {
-      timerDetailedHelp.tryTo(() -> detailedAudio.get().play());
+      detailedAudio.get().play();
     } else {
       if (detailedText.isPresent()) {
         // TODO : synthesis.playText(detailedText)
       }
+    }
+  }
+
+  public void stop() { // TODO To remove
+    if (audio.isPresent()) {
+      audio.get().play();
+    }
+  }
+
+  public void stopDetailed() { // TODO To remove
+    if (detailedAudio.isPresent()) {
+      detailedAudio.get().play();
     }
   }
 

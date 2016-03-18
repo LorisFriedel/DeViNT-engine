@@ -12,7 +12,7 @@ import org.junit.Test;
  *
  * @author Gunther Jungbluth (gunther.jungbluth.poirier@gmail.com)
  */
-public class SchedulerTest {
+public class CustomSchedulerTest {
 
   /**
    * Testing if a normal task executes
@@ -21,9 +21,9 @@ public class SchedulerTest {
    */
   @Test
   public void testNormalTask() throws InterruptedException {
-    Scheduler scheduler = new Scheduler();
+    CustomScheduler customScheduler = new CustomScheduler();
     MutableObject<Boolean> executed = new MutableObject<>(false);
-    scheduler.execute(() -> executed.setValue(true));
+    customScheduler.repeat(() -> executed.setValue(true));
     Thread.sleep(50);
     assertTrue(executed.getValue());
   }
@@ -35,8 +35,8 @@ public class SchedulerTest {
    */
   @Test
   public void testRepeatableTaskNoDelay() throws InterruptedException {
-    Scheduler scheduler = new Scheduler();
-    MutableObject<Integer> executed = executeRepeatableTask(scheduler, 0);
+    CustomScheduler customScheduler = new CustomScheduler();
+    MutableObject<Integer> executed = executeRepeatableTask(customScheduler, 0);
     // We give it plenty if time to execute a lot of loops
     Thread.sleep(150);
     assertEquals(10, (int) executed.getValue());
@@ -50,8 +50,8 @@ public class SchedulerTest {
    */
   @Test
   public void testRepeatableTaskWithDelay() throws InterruptedException {
-    Scheduler scheduler = new Scheduler();
-    MutableObject<Integer> executed = executeRepeatableTask(scheduler, 50);
+    CustomScheduler customScheduler = new CustomScheduler();
+    MutableObject<Integer> executed = executeRepeatableTask(customScheduler, 50);
     // Should have looped 0 time after 20ms
     Thread.sleep(20);
     assertEquals(0, (int) executed.getValue());
@@ -63,13 +63,13 @@ public class SchedulerTest {
   /**
    * Executes a repeatable task with a delay
    *
-   * @param scheduler The scheduler to use
+   * @param customScheduler The customScheduler to use
    * @param delay The delay
    * @return The thread loop counter
    */
-  private MutableObject<Integer> executeRepeatableTask(Scheduler scheduler, int delay) {
+  private MutableObject<Integer> executeRepeatableTask(CustomScheduler customScheduler, int delay) {
     MutableObject<Integer> executed = new MutableObject<>(0);
-    scheduler.execute(new RepeatableTask() {
+    customScheduler.repeat(new RepeatableTask() {
 
       @Override
       public void execute() {
@@ -79,7 +79,7 @@ public class SchedulerTest {
           return;
         }
       }
-    }, delay, 5, TimeUnit.MILLISECONDS);
+    }, delay, 5);
     return executed;
   }
 

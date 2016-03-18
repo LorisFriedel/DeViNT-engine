@@ -9,6 +9,9 @@ import java.io.IOException;
 
 import org.json.JSONException;
 import org.junit.Test;
+import polytech.devint.view.configuration.DisplayConfigurationLoader;
+import polytech.devint.view.configuration.Font;
+import polytech.devint.view.configuration.Palette;
 
 
 /**

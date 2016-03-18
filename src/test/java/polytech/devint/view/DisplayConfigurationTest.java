@@ -6,6 +6,10 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
+import polytech.devint.view.configuration.DisplayConfiguration;
+import polytech.devint.view.configuration.DisplayConfigurationLoader;
+import polytech.devint.view.configuration.Font;
+import polytech.devint.view.configuration.Palette;
 
 
 /**

@@ -15,7 +15,7 @@ import polytech.devint.entity.Button;
 import polytech.devint.entity.Menu;
 import polytech.devint.model.Model;
 import polytech.devint.view.ContextHelp;
-import polytech.devint.view.DisplayConfiguration;
+import polytech.devint.view.configuration.DisplayConfiguration;
 
 /**
  * Testing a swing menu view

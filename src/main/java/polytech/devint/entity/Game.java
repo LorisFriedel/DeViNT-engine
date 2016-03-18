@@ -3,8 +3,8 @@ package polytech.devint.entity;
 import java.util.concurrent.TimeUnit;
 
 import polytech.devint.model.Model;
+import polytech.devint.scheduler.CustomScheduler;
 import polytech.devint.scheduler.RepeatableTask;
-import polytech.devint.scheduler.Scheduler;
 
 /**
  * A game It has a state
@@ -56,7 +56,7 @@ public abstract class Game<M extends Model> extends Component<M> {
   @Override
   public void activate() {
     gameState = GameState.ACTIVE;
-    Scheduler.getDefaultScheduler().execute(new RepeatableTask() {
+    CustomScheduler.getDefaultCustomScheduler().repeat(new RepeatableTask() {
 
       @Override
       public void execute() {

@@ -1,4 +1,4 @@
-package polytech.devint.view;
+package polytech.devint.view.configuration;
 
 import java.io.IOException;
 

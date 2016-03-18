@@ -10,7 +10,7 @@ import polytech.devint.event.entity.ButtonClickEvent;
 import polytech.devint.model.Model;
 import polytech.devint.util.Timeout;
 import polytech.devint.view.DevintView;
-import polytech.devint.view.DisplayConfiguration;
+import polytech.devint.view.configuration.DisplayConfiguration;
 
 /**
  * @param <M>

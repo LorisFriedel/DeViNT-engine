@@ -1,7 +1,6 @@
 package polytech.devint.view.swing;
 
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -25,8 +24,8 @@ import polytech.devint.entity.Menu;
 import polytech.devint.event.entity.ButtonClickEvent;
 import polytech.devint.model.Model;
 import polytech.devint.view.ContextHelp;
-import polytech.devint.view.DisplayConfiguration;
-import polytech.devint.view.Palette;
+import polytech.devint.view.configuration.DisplayConfiguration;
+import polytech.devint.view.configuration.Palette;
 
 /**
  * A display based on a menu (button list)

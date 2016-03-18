@@ -10,12 +10,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import polytech.devint.controller.input.InputConfiguration;
-import polytech.devint.entity.Game;
 import polytech.devint.event.Event;
 import polytech.devint.event.EventManager;
 import polytech.devint.model.Model;
 import polytech.devint.scheduler.RepeatableTask;
-import polytech.devint.scheduler.Scheduler;
+import polytech.devint.scheduler.CustomScheduler;
 import polytech.devint.view.View;
 
 /**
@@ -44,7 +43,7 @@ public abstract class Controller<M extends Model, V extends View<M>> {
     this.eventManager.registerObserver(this);
     this.views = new ArrayList<>();
     this.pressedKeys = new ArrayList<>();
-    Scheduler.getDefaultScheduler().execute(new RepeatableTask() {
+    CustomScheduler.getDefaultCustomScheduler().execute(new RepeatableTask() {
 
       @Override
       public void execute() {
