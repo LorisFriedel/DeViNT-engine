@@ -130,6 +130,14 @@ public class ContextHelp {
     }
   }
 
+  public Optional<Sound> getAudio() {
+    return audio;
+  }
+
+  public Optional<Sound> getDetailedAudio() {
+    return detailedAudio;
+  }
+
   public void updateText(String text) {
     this.text = Optional.ofNullable(text);
   }
