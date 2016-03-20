@@ -99,44 +99,6 @@ public class ContextHelp {
     return detailedText;
   }
 
-  /**
-   * Play the help on speaker
-   */
-  public void play() { // TODO To remove
-    if (audio.isPresent()) {
-      audio.get().play();
-    } else {
-      if (text.isPresent()) {
-        // TODO : synthesis.playText(text)
-      }
-    }
-  }
-
-  /**
-   * Play the detailed help on speaker
-   */
-  public void playDetailed() { // TODO To remove
-    if (detailedAudio.isPresent()) {
-      detailedAudio.get().play();
-    } else {
-      if (detailedText.isPresent()) {
-        // TODO : synthesis.playText(detailedText)
-      }
-    }
-  }
-
-  public void stop() { // TODO To remove
-    if (audio.isPresent()) {
-      audio.get().play();
-    }
-  }
-
-  public void stopDetailed() { // TODO To remove
-    if (detailedAudio.isPresent()) {
-      detailedAudio.get().play();
-    }
-  }
-
   public Optional<Sound> getAudio() {
     return audio;
   }

@@ -42,21 +42,21 @@ public abstract class DevintView<M extends Model> extends View<M> {
    * Play the general help on the speaker
    */
   public void playHelp() {
-    contextHelp.play();
+    // get the sound and play it with the player (add it to the queue)
   }
 
   /**
    * Play the detailed help on the speaker
    */
   public void playDetailedHelp() {
-    contextHelp.playDetailed();
+    // get the sound and play it with the player (add it to the queue)
   }
 
   public void stopHelp() {
-    contextHelp.stopDetailed();
+    // force stop playing the sound in the sound player
   }
 
   public void stopDetailedHelp() {
-    contextHelp.stopDetailed();
+    // force stop playing the sound in the sound player
   }
 }

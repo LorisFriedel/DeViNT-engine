@@ -73,7 +73,7 @@ public abstract class Game<M extends Model> extends Component<M> {
           e.printStackTrace();
         }
       }
-    }, MILLISECONDS_PER_LOOP, TimeUnit.MILLISECONDS);
+    }, MILLISECONDS_PER_LOOP);
   }
 
   /**

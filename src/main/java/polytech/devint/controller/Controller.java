@@ -43,13 +43,13 @@ public abstract class Controller<M extends Model, V extends View<M>> {
     this.eventManager.registerObserver(this);
     this.views = new ArrayList<>();
     this.pressedKeys = new ArrayList<>();
-    CustomScheduler.getDefaultCustomScheduler().execute(new RepeatableTask() {
+    CustomScheduler.getDefaultCustomScheduler().repeat(new RepeatableTask() {
 
       @Override
       public void execute() {
         pressedKeys.forEach((key) -> pressKey(key));
       }
-    }, 0, INTERACTION_INTERVAL, TimeUnit.MILLISECONDS);
+    }, 0, INTERACTION_INTERVAL);
   }
 
   /**

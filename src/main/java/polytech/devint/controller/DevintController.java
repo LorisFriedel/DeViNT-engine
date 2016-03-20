@@ -46,7 +46,7 @@ public abstract class DevintController<M extends Model, V extends DevintView<M>>
 
   @EventHandler
   public final void askForDetailedHelp(F2Event event) {
-    defaultKeyTimeout.tryTo(() -> views.forEach(DevintView::playDetailedHelp));
+    //defaultKeyTimeout.tryTo(() -> views.forEach(DevintView::playDetailedHelp));
   }
 
   @EventHandler
