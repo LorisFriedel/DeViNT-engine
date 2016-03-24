@@ -1,6 +1,7 @@
 package polytech.devint.view;
 
 import polytech.devint.model.Model;
+import polytech.devint.view.sound.SoundPlayer;
 
 /**
  * Represent a specific view used in the devint project
@@ -11,10 +12,12 @@ import polytech.devint.model.Model;
 public abstract class DevintView<M extends Model> extends View<M> {
 
   private final ContextHelp contextHelp;
+  private final SoundPlayer soundPlayer;
 
   public DevintView(ContextHelp contextHelp) {
     super();
     this.contextHelp = contextHelp;
+    this.soundPlayer = new SoundPlayer();
   }
 
   /**
@@ -27,14 +30,12 @@ public abstract class DevintView<M extends Model> extends View<M> {
   @Override
   public void init() {
     super.init();
-
     playHelp();
   }
 
   @Override
   public void destroy() {
     super.destroy();
-
     stopHelp();
   }
 
@@ -42,21 +43,37 @@ public abstract class DevintView<M extends Model> extends View<M> {
    * Play the general help on the speaker
    */
   public void playHelp() {
-    // get the sound and play it with the player (add it to the queue)
+    if(contextHelp.getAudio().isPresent()) {
+      soundPlayer.forcePlay(contextHelp.getAudio().get());
+    } else {
+      // SIVOX
+    }
   }
 
   /**
    * Play the detailed help on the speaker
    */
   public void playDetailedHelp() {
-    // get the sound and play it with the player (add it to the queue)
+    if(contextHelp.getDetailedAudio().isPresent()) {
+      soundPlayer.forcePlay(contextHelp.getDetailedAudio().get());
+    } else {
+      // SIVOX
+    }
   }
 
   public void stopHelp() {
-    // force stop playing the sound in the sound player
+    if(contextHelp.getAudio().isPresent()) {
+      soundPlayer.stopPlay();
+    } else {
+      // STOP SIVOX
+    }
   }
 
   public void stopDetailedHelp() {
-    // force stop playing the sound in the sound player
+    if(contextHelp.getDetailedAudio().isPresent()) {
+      soundPlayer.stopPlay();
+    } else {
+      // STOP SIVOX
+    }
   }
 }
