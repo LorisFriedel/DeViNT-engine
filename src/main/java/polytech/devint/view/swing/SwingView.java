@@ -40,6 +40,13 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
     this.frame = frame;
   }
 
+  /**
+   * @return the current JFrame of the swing view.
+   */
+  public JFrame getFrame() {
+    return frame;
+  }
+
   private void initPanel() {
     this.currentPanel = new JPanel() {
       @Override

@@ -32,9 +32,9 @@ public class SwingMenuViewTest {
     Model m = new Model() {};
     Controller<Model, SwingMenuView<Model>> c = new Controller<Model, SwingMenuView<Model>>(m) {};
     SwingMenuView<Model> v =
-        spy(new SwingMenuView<>(mock(JFrame.class), mock(ContextHelp.class), "toto"));
+        spy(new SwingMenuView<>(mock(JFrame.class), new ContextHelp(), "toto"));
     c.addView(v);
-    Menu menu = new Menu(m);
+    Menu menu = new Menu<>(m);
     Button button = menu.addButton("test 1", () -> System.out.println("toto"));
     v.registerMenu(menu);
     v.init();
@@ -54,9 +54,9 @@ public class SwingMenuViewTest {
     Model m = new Model() {};
     Controller<Model, SwingMenuView<Model>> c = new Controller<Model, SwingMenuView<Model>>(m) {};
     SwingMenuView<Model> v =
-        spy(new SwingMenuView<>(mock(JFrame.class), mock(ContextHelp.class), "toto"));
+        spy(new SwingMenuView<>(mock(JFrame.class), new ContextHelp(), "toto"));
     c.addView(v);
-    Menu menu = new Menu(m);
+    Menu menu = new Menu<>(m);
     Button button = menu.addButton("test 1", () -> System.out.println("toto"));
     v.registerMenu(menu);
     v.init();
