@@ -1,4 +1,4 @@
-package polytech.devint.util.resource;
+package polytech.devint.util.file;
 
 
 import javax.imageio.ImageIO;
