@@ -12,12 +12,11 @@ import polytech.devint.view.sound.SoundPlayer;
 public abstract class DevintView<M extends Model> extends View<M> {
 
   private final ContextHelp contextHelp;
-  private final SoundPlayer soundPlayer;
+  private static final SoundPlayer soundPlayer = new SoundPlayer();
 
   public DevintView(ContextHelp contextHelp) {
     super();
     this.contextHelp = contextHelp;
-    this.soundPlayer = new SoundPlayer();
   }
 
   /**
