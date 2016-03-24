@@ -11,8 +11,9 @@ import polytech.devint.view.sound.SoundPlayer;
  */
 public abstract class DevintView<M extends Model> extends View<M> {
 
-  private final ContextHelp contextHelp;
   private static final SoundPlayer soundPlayer = new SoundPlayer();
+
+  private final ContextHelp contextHelp;
 
   public DevintView(ContextHelp contextHelp) {
     super();
@@ -24,6 +25,10 @@ public abstract class DevintView<M extends Model> extends View<M> {
    */
   public ContextHelp getContextHelp() {
     return contextHelp;
+  }
+
+  protected SoundPlayer soundPlayer() {
+    return soundPlayer;
   }
 
   @Override
