@@ -32,7 +32,7 @@ public class CustomScheduler extends SchedulerReady {
    * @param runnable the runnable for the task
    */
   public void repeat(Runnable runnable) {
-    executor.execute(runnable);
+    getExecutor().execute(runnable);
   }
 
   /**
@@ -54,7 +54,7 @@ public class CustomScheduler extends SchedulerReady {
    */
   public void repeat(RepeatableTask task, long initialDelayMs, long delayMs) {
     MutableObject<ScheduledFuture<?>> mutableTask = new MutableObject<>();
-    mutableTask.setValue(executor.scheduleWithFixedDelay(() -> {
+    mutableTask.setValue(getExecutor().scheduleWithFixedDelay(() -> {
       if (task.needToStop()) {
         mutableTask.getValue().cancel(true);
       } else {

@@ -1,58 +1,63 @@
 package polytech.devint.view.sound;
 
 import polytech.devint.scheduler.SchedulerReady;
-import polytech.devint.view.exception.SoundPlayException;
+import polytech.devint.view.sound.exception.SoundPlayException;
 
 import javax.sound.sampled.LineUnavailableException;
-import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ScheduledFuture;
 
 /**
  * @author Loris Friedel
  */
 public class SoundPlayer extends SchedulerReady {
 
-  private LinkedList<Sound> soundQueue;
-
+  private static final long MARGIN_INTERVAL_MS = 5;
+  private ConcurrentLinkedDeque<Sound> soundQueue;
+  private Sound currentPlay;
+  private ScheduledFuture<?> updateTask;
+  private Runnable onQueueEnd = () -> {};
 
   public SoundPlayer() {
-    this.soundQueue = new LinkedList<>();
+    this.soundQueue = new ConcurrentLinkedDeque<>();
   }
 
-  /*
-  Deux cas:
-   - on veut jouer des sons en mode forcé: on lance un seul son, et si on en lance un second, alors celui qui était en train de jouer ce stop illico
-   - on veut jouer une suite de sons: on veut savoir quand c'est fini de jouer
-      (callback ou isFinish()) et on veut qu'ils s'enchaine avec un interval précis (0 ou plus de MS)
+  /////// GENERAL ///////
+
+  /**
+   * Stop the current sound if it is playing.
    */
-
-  public void enqueue(Sound sound) {
-    soundQueue.add(sound);
+  void stopIfPlaying() {
+    if (currentPlay != null && currentPlay.getDataLine().isOpen()) {
+      stop(currentPlay);
+    }
   }
 
-  public void clearQueue() {
-    //stopQueue();
-    soundQueue.clear();
-  }
+  /////// SIMPLE PLAY ///////
 
+  /**
+   * Force the given sound to be played by the player:
+   * If a previous sound was playing, force it to stop.
+   *
+   * @param sound sound to play no matter what.
+   */
   public void forcePlay(Sound sound) {
-    // stop all sound being played, clear the queue and play the given sound
-    // //stop and clear the queue and enqueue it, or stop the current one, add it to the beginning of the queue ?
+    stopPlay();
+    play(sound);
   }
 
-  public void playQueue() {
-    playQueue(() -> {});
-  }
-
-  public void playQueue(Runnable onFinish) {
-    // on play un son
-    // on dégage le son de la queue une fois qu'il a FINI de jouer
-    // quand la queue est empty, on appelle onFinish
+  /**
+   * Force the current playing sound to stop.
+   */
+  public void stopPlay() {
+    stopQueue();
   }
 
   /**
    * Play the sound until the end of it.
    */
-  private synchronized void play(Sound sound) {
+  private void play(Sound sound) {
+    currentPlay = sound;
     getExecutor().execute(() -> {
       if (!sound.getDataLine().isOpen()) {
         try {
@@ -73,7 +78,7 @@ public class SoundPlayer extends SchedulerReady {
    * Stop the sound if it is currently being played
    * and close the source data line
    */
-  private synchronized void stop(Sound sound) {
+  private void stop(Sound sound) {
     getExecutor().execute(() -> {
       if (sound.getDataLine().isOpen()) {
         sound.getDataLine().stop();
@@ -81,5 +86,72 @@ public class SoundPlayer extends SchedulerReady {
         sound.getDataLine().close();
       }
     });
+  }
+
+
+  /////// QUEUE ///////
+
+  /**
+   * Add the given sound to the sound queue of the player.
+   *
+   * @param sound Sound to add to the playlist queue.
+   */
+  public void enqueue(Sound sound) {
+    soundQueue.add(sound);
+  }
+
+  /**
+   * Stop and clear the sound queue.
+   */
+  public void flushQueue() {
+    stopQueue();
+    soundQueue.clear();
+  }
+
+  /**
+   * Play all sound that are currently in the playlist of the sound player.
+   */
+  public void playQueue() {
+    playQueue(() -> {
+    });
+  }
+
+  /**
+   * Play all sound that are currently in the playlist of the sound player.
+   * Run the given runnable at the end of the playlist, when all sound have been played.
+   *
+   * @param onFinish runnable to run a the end of the playlist.
+   */
+  public void playQueue(Runnable onFinish) {
+    onQueueEnd = onFinish;
+    nextSound();
+  }
+
+  /**
+   * Force the playlist to stop being played.
+   */
+  public void stopQueue() {
+    if (updateTask != null && !updateTask.isDone()) {
+      updateTask.cancel(true);
+    }
+    stopIfPlaying();
+  }
+
+  /**
+   * Play the next sound in the playlist
+   */
+  void nextSound() {
+    if (soundQueue.isEmpty() && onQueueEnd != null) {
+      new Thread(onQueueEnd).start();
+      return;
+    }
+
+    stopIfPlaying();
+    currentPlay = soundQueue.pop();
+    play(currentPlay);
+
+    updateTask = schedule(
+            this::nextSound,
+            currentPlay.getDuration() + MARGIN_INTERVAL_MS);
   }
 }

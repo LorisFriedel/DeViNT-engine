@@ -1,4 +1,4 @@
-package polytech.devint.view.exception;
+package polytech.devint.view.sound.exception;
 
 /**
  * @author Loris Friedel

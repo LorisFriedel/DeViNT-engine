@@ -13,11 +13,10 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.apache.tika.Tika;
 
 import polytech.devint.util.Identifiable;
-import polytech.devint.view.exception.SoundInitializationFailedException;
-import polytech.devint.view.exception.SoundPlayException;
+import polytech.devint.view.sound.exception.SoundInitializationFailedException;
+
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * Represent a sound
@@ -31,8 +30,6 @@ public class Sound extends Identifiable<Integer> {
 
   private static int nextId = 0;
 
-  final ScheduledThreadPoolExecutor scheduler;
-
   String name;
   AudioFormat format;
   SourceDataLine dataLine;
@@ -43,7 +40,6 @@ public class Sound extends Identifiable<Integer> {
   private static final List<String> WAV_MIMETYPES =
           Arrays.asList("audio/x-wav", "audio/vnd.wave", "audio/wav", "audio/wave");
   private static final int MS_IN_ONE_SECOND = 1000;
-  private static final int DEFAULT_THREAD_POOL_FOR_SOUND = 2;
 
   /**
    * Create a playable sound from a .wav file
@@ -75,7 +71,6 @@ public class Sound extends Identifiable<Integer> {
             | UnsupportedAudioFileException e) {
       throw new SoundInitializationFailedException(waveFile.getName());
     }
-    this.scheduler = new ScheduledThreadPoolExecutor(DEFAULT_THREAD_POOL_FOR_SOUND);
   }
 
   /**

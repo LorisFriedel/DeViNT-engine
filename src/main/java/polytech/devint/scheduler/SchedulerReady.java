@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class SchedulerReady {
 
-  protected final ScheduledThreadPoolExecutor executor;
+  private final ScheduledThreadPoolExecutor executor;
 
   private static final ScheduledThreadPoolExecutor DEFAULT_EXECUTOR;
   private static final int DEFAULT_THREAD_POOL_SIZE = 1;

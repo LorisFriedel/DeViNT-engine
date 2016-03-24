@@ -15,7 +15,7 @@ import polytech.devint.model.Model;
 public class ComponentTest {
 
   /**
-   * Testing if the component has been added to the obvserver list
+   * Testing if the component has been added to the observer list
    */
   @Test
   public void test() {
@@ -32,7 +32,7 @@ public class ComponentTest {
     Model model = new Model() {};
     Component component = spy(new EmptyComponent(model));
     Entity entity = mock(Entity.class);
-    when(entity.isAlive()).thenReturn(true).thenReturn(false);
+    when(entity.isAlive()).thenReturn(true, false);
     component.addEntity(entity);
     component.update();
     component.removeEntity(entity);

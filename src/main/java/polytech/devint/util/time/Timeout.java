@@ -1,4 +1,6 @@
-package polytech.devint.util;
+package polytech.devint.util.time;
+
+import polytech.devint.util.VoidLambda;
 
 /**
  * @author Gunther Jungbluth (gunther.jungbluth.poirier@gmail.com)

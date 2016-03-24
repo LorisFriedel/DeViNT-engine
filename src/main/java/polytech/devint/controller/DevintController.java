@@ -8,7 +8,7 @@ import polytech.devint.event.basic.F3Event;
 import polytech.devint.event.basic.F4Event;
 import polytech.devint.event.entity.ButtonClickEvent;
 import polytech.devint.model.Model;
-import polytech.devint.util.Timeout;
+import polytech.devint.util.time.Timeout;
 import polytech.devint.view.DevintView;
 import polytech.devint.view.configuration.DisplayConfiguration;
 
