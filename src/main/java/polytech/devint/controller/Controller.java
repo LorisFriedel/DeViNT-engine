@@ -47,7 +47,11 @@ public abstract class Controller<M extends Model, V extends View<M>> {
 
       @Override
       public void execute() {
-        pressedKeys.forEach((key) -> pressKey(key));
+        try {
+          pressedKeys.forEach((key) -> pressKey(key));
+        } catch(Exception e) {
+          LOGGER.error("Error while pressing keys", e);
+        }
       }
     }, 0, INTERACTION_INTERVAL);
   }
