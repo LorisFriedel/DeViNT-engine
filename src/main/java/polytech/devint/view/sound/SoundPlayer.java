@@ -14,7 +14,7 @@ public class SoundPlayer extends SchedulerReady {
 
   private static final long MARGIN_INTERVAL_MS = 5;
   private ConcurrentLinkedDeque<Sound> soundQueue;
-  private Sound currentPlay;
+  private Sound currentSound;
   private ScheduledFuture<?> updateTask;
   private Runnable onQueueEnd = () -> {};
 
@@ -28,9 +28,13 @@ public class SoundPlayer extends SchedulerReady {
    * Stop the current sound if it is playing.
    */
   void stopIfPlaying() {
-    if (currentPlay != null && currentPlay.getDataLine().isOpen()) {
-      stop(currentPlay);
+    if (currentSound != null) {
+      stop(currentSound);
     }
+  }
+
+  private void setCurrent(Sound sound) {
+    this.currentSound = sound;
   }
 
   /////// SIMPLE PLAY ///////
@@ -57,7 +61,7 @@ public class SoundPlayer extends SchedulerReady {
    * Play the sound until the end of it.
    */
   private void play(Sound sound) {
-    currentPlay = sound;
+    setCurrent(sound);
     getExecutor().execute(() -> {
       if (!sound.getDataLine().isOpen()) {
         try {
@@ -79,13 +83,11 @@ public class SoundPlayer extends SchedulerReady {
    * and close the source data line
    */
   private void stop(Sound sound) {
-    getExecutor().execute(() -> {
-      if (sound.getDataLine().isOpen()) {
-        sound.getDataLine().stop();
-        sound.getDataLine().flush();
-        sound.getDataLine().close();
-      }
-    });
+    if (sound.getDataLine().isOpen()) {
+      sound.getDataLine().stop();
+      sound.getDataLine().flush();
+      sound.getDataLine().close();
+    }
   }
 
 
@@ -147,11 +149,11 @@ public class SoundPlayer extends SchedulerReady {
     }
 
     stopIfPlaying();
-    currentPlay = soundQueue.pop();
-    play(currentPlay);
+    setCurrent(soundQueue.pop());
+    play(currentSound);
 
     updateTask = schedule(
             this::nextSound,
-            currentPlay.getDuration() + MARGIN_INTERVAL_MS);
+            currentSound.getDuration() + MARGIN_INTERVAL_MS);
   }
 }

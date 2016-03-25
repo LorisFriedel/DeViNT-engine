@@ -18,7 +18,7 @@ public class SoundPlayerTest {
 
   @Before
   public void setUp() {
-    sp = spy(SoundPlayer.class);
+    sp = new SoundPlayer();
   }
 
   @Test
