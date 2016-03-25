@@ -178,8 +178,9 @@ public class SoundPlayer extends SchedulerReady {
       return;
     }
 
+    stopIfPlaying();
     setCurrent(soundQueue.pop());
-    forcePlay(currentSound);
+    play(currentSound);
 
     updateTask = schedule(
             this::nextSound,
