@@ -13,7 +13,7 @@ import java.util.concurrent.ScheduledFuture;
  */
 public class SoundPlayer extends SchedulerReady {
 
-  private static final long MARGIN_INTERVAL_MS = 5;
+  private static final long MARGIN_INTERVAL_MS = 10;
   private static final Runnable DEFAULT_ON_FINISH = () -> {};
 
   private ConcurrentLinkedDeque<Sound> soundQueue;

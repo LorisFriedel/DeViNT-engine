@@ -27,6 +27,8 @@ public abstract class DevintView<M extends Model> extends View<M> {
     return contextHelp;
   }
 
+  // TODO faire un register main view static, qui se mettra en place a chaque fois qu'on fait échap ?
+
   protected SoundPlayer soundPlayer() {
     return soundPlayer;
   }
