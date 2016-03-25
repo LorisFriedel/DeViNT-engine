@@ -14,10 +14,13 @@ import java.util.concurrent.ScheduledFuture;
 public class SoundPlayer extends SchedulerReady {
 
   private static final long MARGIN_INTERVAL_MS = 5;
+  private static final Runnable DEFAULT_ON_FINISH = () -> {};
+
   private ConcurrentLinkedDeque<Sound> soundQueue;
   private Sound currentSound;
   private ScheduledFuture<?> updateTask;
-  private Runnable onQueueEnd = () -> {};
+  private Runnable onQueueEnd = () -> {
+  };
 
   public SoundPlayer() {
     this.soundQueue = new ConcurrentLinkedDeque<>();
@@ -96,6 +99,7 @@ public class SoundPlayer extends SchedulerReady {
 
   /**
    * Add the given sound to the sound queue of the player.
+   * This method does not check if the player is currently playing sounds.
    *
    * @param sound Sound to add to the playlist queue.
    */
@@ -104,13 +108,47 @@ public class SoundPlayer extends SchedulerReady {
   }
 
   /**
-   * 
-   * @param soundList
+   * Enqueue all the given sounds and play the playlist.
+   * Stop the player before playing the playlist.
+   *
+   * @param soundList sounds to play.
    */
   public void playAll(List<Sound> soundList) {
+    playAll(soundList, DEFAULT_ON_FINISH);
+  }
+
+  /**
+   * Enqueue all the given sounds and play the playlist.
+   * Stop the player before playing the playlist.
+   * Run the given runnable at the end of the playlist, when all sound have been played.
+   *
+   * @param soundList sounds to play.
+   * @param onFinish  runnable to run when the playlist end.
+   */
+  public void playAll(List<Sound> soundList, Runnable onFinish) {
     flushQueue();
     soundList.forEach(this::enqueue);
-    playQueue();
+    playQueue(onFinish);
+  }
+
+  /**
+   * Play all sound that are currently in the playlist of the sound player.
+   * Does not stop any previous play of the player.
+   */
+  public void playQueue() {
+    playQueue(DEFAULT_ON_FINISH);
+  }
+
+  /**
+   * Play all sound that are currently in the playlist of the sound player.
+   * Does not stop any previous play of the player.
+   * Run the given runnable at the end of the playlist, when all sound have been played.
+   *
+   * @param onFinish runnable to run a the end of the playlist.
+   */
+  public void playQueue(Runnable onFinish) {
+    onQueueEnd = onFinish;
+    nextSound();
   }
 
   /**
@@ -119,25 +157,6 @@ public class SoundPlayer extends SchedulerReady {
   public void flushQueue() {
     stopQueue();
     soundQueue.clear();
-  }
-
-  /**
-   * Play all sound that are currently in the playlist of the sound player.
-   */
-  public void playQueue() {
-    playQueue(() -> {
-    });
-  }
-
-  /**
-   * Play all sound that are currently in the playlist of the sound player.
-   * Run the given runnable at the end of the playlist, when all sound have been played.
-   *
-   * @param onFinish runnable to run a the end of the playlist.
-   */
-  public void playQueue(Runnable onFinish) {
-    onQueueEnd = onFinish;
-    nextSound();
   }
 
   /**
