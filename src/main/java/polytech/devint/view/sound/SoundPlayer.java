@@ -55,7 +55,7 @@ public class SoundPlayer extends SchedulerReady {
    * Force the current playing sound to stop.
    */
   public void stopPlay() {
-    stopQueue();
+    flushQueue();
   }
 
   /**
@@ -108,6 +108,7 @@ public class SoundPlayer extends SchedulerReady {
    * @param soundList
    */
   public void playAll(List<Sound> soundList) {
+    flushQueue();
     soundList.forEach(this::enqueue);
     playQueue();
   }
