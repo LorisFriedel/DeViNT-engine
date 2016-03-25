@@ -48,7 +48,7 @@ public final class ResourceLoader {
    * @return an instance of a file we wanted to load if it was possible
    */
   public final File loadFileFrom(String folder, String name) {
-    return loadFileFrom(getClass().getClassLoader().getResource(folder + name));
+    return loadFileFrom(getClass().getClassLoader().getResource(folder + "/" + name));
   }
 
   /**
@@ -76,10 +76,10 @@ public final class ResourceLoader {
    * @param resourceFolderPath path of the resource folder in which the file we want to load are
    * @return a list of file, non-empty, that were in the folder pointed by the given path
    */
-  public List<File> loadFilesIn(String resourceFolderPath) {
+  public List<File> loadAllFilesFrom(String resourceFolderPath) {
     // Resources loading
     List<File> files
-            = loadFilesFrom(getClass().getClassLoader().getResource(resourceFolderPath));
+            = loadAllFilesFrom(getClass().getClassLoader().getResource(resourceFolderPath));
 
     if (files.isEmpty()) {
       throw new ResourceFileErrorException();
@@ -96,7 +96,7 @@ public final class ResourceLoader {
    * @param predicate predicate that will filter files
    * @return a list of all loaded file (and only file, not folder) from the pointed folder
    */
-  public final List<File> loadFilesFrom(URL url, Predicate<File> predicate) {
+  public final List<File> loadAllFilesFrom(URL url, Predicate<File> predicate) {
     if (url == null) {
       throw new ResourceFileErrorException();
     }
@@ -119,7 +119,7 @@ public final class ResourceLoader {
    * @param url url of a folder from which we want to load file
    * @return a list of all loaded file (and only file, not folder) from the pointed folder
    */
-  public final List<File> loadFilesFrom(URL url) {
-    return loadFilesFrom(url, f -> true);
+  public final List<File> loadAllFilesFrom(URL url) {
+    return loadAllFilesFrom(url, f -> true);
   }
 }
