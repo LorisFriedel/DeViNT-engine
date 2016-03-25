@@ -29,7 +29,7 @@ public class SwingViewTest {
     SwingTestView v = spy(new SwingTestView(mock(JFrame.class)));
     c.addView(v);
     v.init();
-    verify(v, times(1)).initView();
+    verify(v, times(1)).initCustomContent();
     // Checking if the JPanel has been properly added-
     assertTrue(v.currentPanel != null);
   }
@@ -41,13 +41,13 @@ public class SwingViewTest {
     }
 
     @Override
-    public void initView() {
+    public void initCustomContent() {
       // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void destroyView() {
+    public void destroyCustomContent() {
       // TODO Auto-generated method stub
 
     }

@@ -30,12 +30,12 @@ public class TestView extends SwingView<Model> {
   }
 
   @Override
-  public void initView() {
+  public void initCustomContent() {
 
   }
 
   @Override
-  public void destroyView() {
+  public void destroyCustomContent() {
 
   }
 }

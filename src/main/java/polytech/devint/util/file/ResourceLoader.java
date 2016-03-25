@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 public final class ResourceLoader {
 
   public ResourceLoader() {
-    // singleton
+
   }
 
   /**

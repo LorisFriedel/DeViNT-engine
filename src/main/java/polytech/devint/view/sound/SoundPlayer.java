@@ -4,6 +4,7 @@ import polytech.devint.scheduler.SchedulerReady;
 import polytech.devint.view.sound.exception.SoundPlayException;
 
 import javax.sound.sampled.LineUnavailableException;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ScheduledFuture;
 
@@ -100,6 +101,15 @@ public class SoundPlayer extends SchedulerReady {
    */
   public void enqueue(Sound sound) {
     soundQueue.add(sound);
+  }
+
+  /**
+   * 
+   * @param soundList
+   */
+  public void playAll(List<Sound> soundList) {
+    soundList.forEach(this::enqueue);
+    playQueue();
   }
 
   /**

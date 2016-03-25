@@ -118,7 +118,7 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
     currentKeyDispatcher = new SwingKeyDispatcher<>(controller);
     KeyboardFocusManager.getCurrentKeyboardFocusManager()
             .addKeyEventDispatcher(currentKeyDispatcher);
-    initView();
+    initCustomContent();
     frame.revalidate();
     frame.repaint();
     update();
@@ -139,18 +139,18 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
     KeyboardFocusManager.getCurrentKeyboardFocusManager()
     .removeKeyEventDispatcher(currentKeyDispatcher);
     controller.resetKeys();
-    destroyView();
+    destroyCustomContent();
   }
 
   /**
    * Called when a swing view is being initialized
    */
-  public abstract void initView();
+  public abstract void initCustomContent();
 
   /**
    * Called when a swing view is being destroyed
    */
-  public abstract void destroyView();
+  public abstract void destroyCustomContent();
 
   /**
    * Called on each view update

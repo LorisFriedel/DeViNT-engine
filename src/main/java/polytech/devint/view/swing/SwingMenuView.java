@@ -113,7 +113,7 @@ public class SwingMenuView<M extends Model> extends SwingView<M> {
   }
 
   @Override
-  public void initView() {
+  public void initCustomContent() {
     // Draw the menu
     currentSelection = null;
     drawMenu();
@@ -121,7 +121,7 @@ public class SwingMenuView<M extends Model> extends SwingView<M> {
   }
 
   @Override
-  public void destroyView() {
+  public void destroyCustomContent() {
     // Remove all components
     currentPanel.removeAll();
   }
