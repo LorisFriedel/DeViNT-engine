@@ -78,7 +78,7 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
   /**
    * Instantiates a default new view with the default frame and default context help (empty)
    */
-  SwingView() {
+  public SwingView() {
     this(getDefaultFrame(), new ContextHelp());
   }
 
@@ -124,21 +124,12 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
     update();
   }
 
-  /**
-   * Resets the view, Calls destroyContent() and initContent()
-   */
-  public void reset() {
-    destroyContent();
-    setupContent();
-  }
-
   @Override
   public void destroyContent() {
     currentPanel.removeAll();
     frame.setContentPane(new JPanel());
     KeyboardFocusManager.getCurrentKeyboardFocusManager()
-    .removeKeyEventDispatcher(currentKeyDispatcher);
-    controller.resetKeys();
+            .removeKeyEventDispatcher(currentKeyDispatcher);
     destroyCustomContent();
   }
 

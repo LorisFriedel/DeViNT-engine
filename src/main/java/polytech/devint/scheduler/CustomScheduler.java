@@ -4,7 +4,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Used to create tasks (repeatable or pontual)
+ * Used to create tasks (repeatable or punctual)
  *
  * @author Gunther Jungbluth (gunther.jungbluth.poirier@gmail.com)
  * @author Loris Friedel

@@ -39,7 +39,6 @@ public abstract class View<M extends Model> {
   public void init() {
     register();
     setupContent();
-    controller.resetKeys();
     isActive = true;
   }
 

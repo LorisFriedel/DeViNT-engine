@@ -1,20 +1,13 @@
 package polytech.devint.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 import java.util.function.Consumer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import polytech.devint.controller.input.InputConfiguration;
 import polytech.devint.event.Event;
 import polytech.devint.event.EventManager;
 import polytech.devint.model.Model;
-import polytech.devint.scheduler.RepeatableTask;
-import polytech.devint.scheduler.CustomScheduler;
 import polytech.devint.view.View;
 
 /**
@@ -22,12 +15,10 @@ import polytech.devint.view.View;
  */
 public abstract class Controller<M extends Model, V extends View<M>> {
 
-  static final Logger LOGGER = LogManager.getLogger(Controller.class);
-  private static final int INTERACTION_INTERVAL = 35;
-  protected final EventManager eventManager;
-  final InputConfiguration inputConfiguration;
+  private final EventManager eventManager;
+  private final InputConfiguration inputConfiguration;
+  protected final Set<Integer> waitingRelease;
   protected final List<V> views;
-  protected final List<Key> pressedKeys;
   protected M model;
 
   /**
@@ -39,21 +30,10 @@ public abstract class Controller<M extends Model, V extends View<M>> {
   public Controller(M model, InputConfiguration inputConfiguration) {
     this.model = model;
     this.inputConfiguration = inputConfiguration;
+    this.waitingRelease = new HashSet<>();
     this.eventManager = new EventManager();
     this.eventManager.registerObserver(this);
     this.views = new ArrayList<>();
-    this.pressedKeys = new ArrayList<>();
-    CustomScheduler.getDefaultCustomScheduler().repeat(new RepeatableTask() {
-
-      @Override
-      public void execute() {
-        try {
-          pressedKeys.forEach((key) -> pressKey(key));
-        } catch(Exception e) {
-          LOGGER.error("Error while pressing keys", e);
-        }
-      }
-    }, 0, INTERACTION_INTERVAL);
   }
 
   /**
@@ -128,7 +108,7 @@ public abstract class Controller<M extends Model, V extends View<M>> {
    * Update all active views
    */
   public void updateViews() {
-    views.forEach(v -> {
+    forEachViews(v -> {
       if (v.isActive()) {
         v.update();
       }
@@ -149,73 +129,42 @@ public abstract class Controller<M extends Model, V extends View<M>> {
     return inputConfiguration;
   }
 
-  /**
-   * Adds a key being pressed from its code
-   *
-   * @param code
-   */
-  public void pressKey(int code) {
-    Key key = getKey(code);
-    if (key == null) {
-      key = new Key(code);
-      pressedKeys.add(key);
+
+  public void pressKey(Integer keyCode) {
+    List<Class<? extends Event>> events = new ArrayList<>();
+
+    Optional<List<Class<? extends Event>>> pressEvents = getInputConfiguration().getKeyPressedEvents(keyCode);
+    Optional<List<Class<? extends Event>>> pressOnceEvents = getInputConfiguration().getKeyPressedOnceEvents(keyCode);
+
+    if (!waitingRelease.contains(keyCode) && pressOnceEvents.isPresent()) {
+      waitingRelease.add(keyCode);
+      events.addAll(pressOnceEvents.get());
     }
-    pressKey(key);
+
+    if (pressEvents.isPresent()) {
+      events.addAll(pressEvents.get());
+    }
+
+    notifyAll(events);
   }
 
-  public void pressKey(Key key) {
-    Optional<List<Class<? extends Event>>> events = getInputConfiguration().getEvents(key.code);
-    if (events.isPresent()) {
-      List<Class<? extends Event>> eventList = events.get();
-      eventList.forEach(e -> {
-        try {
-          getEventManager().notify(e.getConstructor().newInstance());
-        } catch (Exception e1) {
-          LOGGER.error("Invalid event constructor", e);
-        }
-      });
+  public void releaseKey(Integer keyCode) {
+    waitingRelease.remove(keyCode);
+
+    Optional<List<Class<? extends Event>>> releaseEvents = getInputConfiguration().getKeyReleasedEvents(keyCode);
+
+    if (releaseEvents.isPresent()) {
+      notifyAll(releaseEvents.get());
     }
   }
 
-  private Controller<M, V>.Key getKey(int code) {
-    for (Key k : pressedKeys) {
-      if (k.code == code) {
-        return k;
+  private void notifyAll(List<Class<? extends Event>> events) {
+    events.forEach(event -> {
+      try {
+        notifySelf(event.getConstructor().newInstance());
+      } catch (Exception e) {
+        // IGNORE, maybe log ?
       }
-    }
-    return null;
-  }
-
-  /**
-   * Removes a key being pressed from its code
-   *
-   * @param code
-   */
-  public void unpressKey(int code) {
-    Key key = getKey(code);
-    pressedKeys.remove(key);
-    if (key != null && canPress(key)) {
-      pressKey(key);
-    }
-  }
-
-  private boolean canPress(Key key) {
-    return System.currentTimeMillis() - key.code > INTERACTION_INTERVAL;
-  }
-
-  /**
-   * Resets the controller inputs
-   */
-  public void resetKeys() {
-    pressedKeys.clear();
-  }
-
-  private class Key {
-    final int code;
-
-    public Key(int code) {
-      super();
-      this.code = code;
-    }
+    });
   }
 }

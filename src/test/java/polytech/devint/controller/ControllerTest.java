@@ -33,7 +33,7 @@ public class ControllerTest {
     // but it need to instantiate a new event manager that will manage the event between it and the
     // views it contains
     assertEquals(model, controller.getModel());
-    assertEquals(config, controller.inputConfiguration);
+    assertEquals(config, controller.getInputConfiguration());
     assertNotNull(controller.getEventManager());
   }
 

@@ -2,11 +2,15 @@ package polytech.devint.view.swing;
 
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import polytech.devint.controller.Controller;
+import polytech.devint.event.Event;
 import polytech.devint.model.Model;
 import polytech.devint.view.View;
 
@@ -16,12 +20,9 @@ import polytech.devint.view.View;
  * @param <M>
  * @author Gunther Jungbluth (gunther.jungbluth.poirier@gmail.com)
  */
-public class SwingKeyDispatcher<M extends Model, V extends View<M>>
-        implements KeyEventDispatcher {
+public class SwingKeyDispatcher<M extends Model, V extends View<M>> implements KeyEventDispatcher {
 
   private final Controller<M, V> controller;
-
-  private static final Logger LOGGER = LogManager.getLogger(SwingKeyDispatcher.class);
 
   /**
    * Instantiates a new key dispatcher under a controller
@@ -33,14 +34,12 @@ public class SwingKeyDispatcher<M extends Model, V extends View<M>>
   }
 
   @Override
-  public boolean dispatchKeyEvent(KeyEvent arg0) {
-    // If a key has been pressed
-    if (arg0.getID() == KeyEvent.KEY_PRESSED) {
-      controller.pressKey(arg0.getKeyCode());
-    } else if (arg0.getID() == KeyEvent.KEY_RELEASED) {
-      controller.unpressKey(arg0.getKeyCode());
+  public boolean dispatchKeyEvent(KeyEvent event) {
+    if (event.getID() == KeyEvent.KEY_PRESSED) {
+      controller.pressKey(event.getKeyCode());
+    } else if (event.getID() == KeyEvent.KEY_RELEASED) {
+      controller.releaseKey(event.getKeyCode());
     }
     return false;
   }
-
 }

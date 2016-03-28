@@ -33,12 +33,11 @@ public class InputConfigurationTest {
     InputConfiguration config = new InputConfiguration();
 
     // The default configuration should be present
-    assertFalse(config.controls.isEmpty());
-    assertTrue(config.getEvents(KeyEvent.VK_F1).isPresent());
-    assertTrue(config.getEvents(KeyEvent.VK_ENTER).isPresent());
-    assertTrue(config.getEvents(KeyEvent.VK_SPACE).isPresent());
-    assertTrue(config.getEvents(KeyEvent.VK_F6).isPresent());
-    assertTrue(config.getEvents(KeyEvent.VK_ESCAPE).isPresent());
+    assertTrue(config.getKeyPressedOnceEvents(KeyEvent.VK_F1).isPresent());
+    assertTrue(config.getKeyPressedOnceEvents(KeyEvent.VK_ENTER).isPresent());
+    assertTrue(config.getKeyPressedOnceEvents(KeyEvent.VK_SPACE).isPresent());
+    assertTrue(config.getKeyPressedOnceEvents(KeyEvent.VK_F6).isPresent());
+    assertTrue(config.getKeyPressedOnceEvents(KeyEvent.VK_ESCAPE).isPresent());
   }
 
   /**
@@ -46,19 +45,16 @@ public class InputConfigurationTest {
    */
   @Test
   public void removeBinding() {
-    int defaultSize = config.controls.size();
-    assertTrue(config.getEvents(KeyEvent.VK_SPACE).isPresent());
+    assertTrue(config.getKeyPressedOnceEvents(KeyEvent.VK_SPACE).isPresent());
 
-    config.removeBind(KeyEvent.VK_SPACE);
-    assertEquals(defaultSize - 1, config.controls.size());
-    assertFalse(config.getEvents(KeyEvent.VK_SPACE).isPresent());
+    config.unbind(KeyEvent.VK_SPACE);
+    assertFalse(config.getKeyPressedOnceEvents(KeyEvent.VK_SPACE).isPresent());
 
-    config.removeBind(F1Event.class);
-    assertEquals(defaultSize - 2, config.controls.size());
-    assertFalse(config.getEvents(KeyEvent.VK_F1).isPresent());
+    config.unbind(F1Event.class);
+    assertFalse(config.getKeyPressedOnceEvents(KeyEvent.VK_F1).isPresent());
 
-    config.addBinding(KeyEvent.VK_ESCAPE, EscapeEvent.class);
-    assertEquals(2, config.getEvents(KeyEvent.VK_ESCAPE).get().size());
+    config.bindOnPressOnce(KeyEvent.VK_ESCAPE, EscapeEvent.class);
+    assertEquals(2, config.getKeyPressedOnceEvents(KeyEvent.VK_ESCAPE).get().size());
   }
 
   /**
@@ -66,19 +62,19 @@ public class InputConfigurationTest {
    */
   @Test
   public void addBindingTest() {
-    int defaultSize = config.controls.size();
+    int defaultSize = config.keyPressedOnceControls.size();
 
-    config.addBinding(KeyEvent.VK_ESCAPE, F1Event.class);
-    assertEquals(defaultSize, config.controls.size());
-    config.addBinding(KeyEvent.VK_ESCAPE, F1Event.class);
-    assertEquals(defaultSize, config.controls.size());
+    config.bindOnPressOnce(KeyEvent.VK_ESCAPE, F1Event.class);
+    assertEquals(defaultSize, config.keyPressedOnceControls.size());
+    config.bindOnPressOnce(KeyEvent.VK_ESCAPE, F1Event.class);
+    assertEquals(defaultSize, config.keyPressedOnceControls.size());
 
-    config.addBinding(KeyEvent.VK_F10, F6Event.class);
-    assertEquals(defaultSize + 1, config.controls.size());
-    config.addBinding(KeyEvent.VK_F10, F6Event.class);
-    assertEquals(defaultSize + 1, config.controls.size());
+    config.bindOnPressOnce(KeyEvent.VK_F10, F6Event.class);
+    assertEquals(defaultSize + 1, config.keyPressedOnceControls.size());
+    config.bindOnPressOnce(KeyEvent.VK_F10, F6Event.class);
+    assertEquals(defaultSize + 1, config.keyPressedOnceControls.size());
 
-    config.addBinding(KeyEvent.VK_0, EscapeEvent.class);
-    assertEquals(defaultSize + 2, config.controls.size());
+    config.bindOnPressOnce(KeyEvent.VK_0, EscapeEvent.class);
+    assertEquals(defaultSize + 2, config.keyPressedOnceControls.size());
   }
 }

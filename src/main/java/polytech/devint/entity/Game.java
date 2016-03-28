@@ -69,8 +69,7 @@ public abstract class Game<M extends Model> extends Component<M> {
             gameLoop();
           }
         } catch (Exception e) {
-          // TODO: Remove, use logger
-          e.printStackTrace();
+          // TODO: log it
         }
       }
     }, MILLISECONDS_PER_LOOP);
