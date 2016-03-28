@@ -30,11 +30,19 @@ public class SoundPlayer extends SchedulerReady {
 
   /////// GENERAL ///////
 
+  /**
+   * Deactivate the sound play.
+   * No sound can be played until it has been reactivated.
+   */
   public void deactivate() {
     stopPlay();
     active = false;
   }
 
+  /**
+   * Reactive the sound player.
+   * The player is in its normal state after a call of this method.
+   */
   public void reactivate() {
     active = true;
   }
@@ -165,7 +173,7 @@ public class SoundPlayer extends SchedulerReady {
     if(!active) {
       return;
     }
-    
+
     onQueueEnd = onFinish;
     nextSound();
   }
