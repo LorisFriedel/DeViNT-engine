@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.function.Consumer;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import polytech.devint.controller.input.InputConfiguration;
 import polytech.devint.event.Event;
 import polytech.devint.event.EventManager;
@@ -14,6 +16,8 @@ import polytech.devint.view.View;
  * @author Loris Friedel
  */
 public abstract class Controller<M extends Model, V extends View<M>> {
+
+  private static final Logger LOGGER = LogManager.getLogger(Controller.class);
 
   private final EventManager eventManager;
   private final InputConfiguration inputConfiguration;
@@ -163,7 +167,7 @@ public abstract class Controller<M extends Model, V extends View<M>> {
       try {
         notifySelf(event.getConstructor().newInstance());
       } catch (Exception e) {
-        // IGNORE, maybe log ?
+        LOGGER.error("Error while invoking " + event + ":", e);
       }
     });
   }
