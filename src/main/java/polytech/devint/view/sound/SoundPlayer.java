@@ -14,10 +14,12 @@ import java.util.concurrent.ScheduledFuture;
 public class SoundPlayer extends SchedulerReady {
 
   private static final long MARGIN_INTERVAL_MS = 10;
-  private static final Runnable DEFAULT_ON_FINISH = () -> {};
+  private static final Runnable DEFAULT_ON_FINISH = () -> {
+  };
 
   private ConcurrentLinkedDeque<Sound> soundQueue;
   private Sound currentSound;
+  private Boolean active = true;
   private ScheduledFuture<?> updateTask;
   private Runnable onQueueEnd = () -> {
   };
@@ -27,6 +29,15 @@ public class SoundPlayer extends SchedulerReady {
   }
 
   /////// GENERAL ///////
+
+  public void deactivate() {
+    stopPlay();
+    active = false;
+  }
+
+  public void reactivate() {
+    active = true;
+  }
 
   /**
    * Stop the current sound if it is playing.
@@ -50,6 +61,10 @@ public class SoundPlayer extends SchedulerReady {
    * @param sound sound to play no matter what.
    */
   public void forcePlay(Sound sound) {
+    if(!active) {
+      return;
+    }
+
     stopPlay();
     play(sound);
   }
@@ -147,6 +162,10 @@ public class SoundPlayer extends SchedulerReady {
    * @param onFinish runnable to run a the end of the playlist.
    */
   public void playQueue(Runnable onFinish) {
+    if(!active) {
+      return;
+    }
+    
     onQueueEnd = onFinish;
     nextSound();
   }
@@ -156,7 +175,9 @@ public class SoundPlayer extends SchedulerReady {
    */
   public void flushQueue() {
     stopQueue();
-    soundQueue.clear();
+    if (!soundQueue.isEmpty()) {
+      soundQueue.clear();
+    }
   }
 
   /**

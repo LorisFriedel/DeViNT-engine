@@ -24,29 +24,28 @@ public class SwingMenuController<M extends Model> extends DevintController<M, Sw
 
   @EventHandler
   public final void onUp(UpEvent event) {
-    defaultKeyTimeout.tryTo(() -> views.forEach(v -> {
+    forEachViews(v -> {
       if (v.isActive()) {
         v.changeButtonSelection(SwingMenuView.ButtonChangeDirection.UP);
       }
-    }));
+    });
   }
 
   @EventHandler
   public final void onDown(DownEvent event) {
-    defaultKeyTimeout.tryTo(() -> views.forEach(v -> {
+    forEachViews(v -> {
       if (v.isActive()) {
         v.changeButtonSelection(SwingMenuView.ButtonChangeDirection.DOWN);
       }
-    }));
+    });
   }
 
   @EventHandler
   public final void onEnter(EnterEvent event) {
-    defaultKeyTimeout.tryTo(() -> views.forEach(v -> {
+    forEachViews(v -> {
       if (v.isActive()) {
         v.pressButton();
       }
-    }));
-
+    });
   }
 }

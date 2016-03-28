@@ -19,8 +19,6 @@ import polytech.devint.view.configuration.DisplayConfiguration;
 public abstract class DevintController<M extends Model, V extends DevintView<M>>
         extends Controller<M, V> {
 
-  protected final Timeout defaultKeyTimeout = new Timeout(200);
-
   public DevintController(M model, InputConfiguration inputConfiguration) {
     super(model, inputConfiguration);
   }
@@ -41,27 +39,23 @@ public abstract class DevintController<M extends Model, V extends DevintView<M>>
 
   @EventHandler
   public final void askForHelp(F1Event event) {
-    defaultKeyTimeout.tryTo(() -> views.forEach(DevintView::playHelp));
+    forEachViews(DevintView::playHelp);
   }
 
   @EventHandler
   public final void askForDetailedHelp(F2Event event) {
-    //defaultKeyTimeout.tryTo(() -> views.forEach(DevintView::playDetailedHelp));
+    forEachViews(DevintView::playDetailedHelp);
   }
 
   @EventHandler
   public final void onPaletteChange(F3Event event) {
-    defaultKeyTimeout.tryTo(() -> {
-      DisplayConfiguration.getDefaultDisplay().nextPalette();
-      updateViews();
-    });
+    DisplayConfiguration.getDefaultDisplay().nextPalette();
+    updateViews();
   }
 
   @EventHandler
   public final void onFontChange(F4Event event) {
-    defaultKeyTimeout.tryTo(() -> {
-      DisplayConfiguration.getDefaultDisplay().nextFont();
-      updateViews();
-    });
+    DisplayConfiguration.getDefaultDisplay().nextFont();
+    updateViews();
   }
 }

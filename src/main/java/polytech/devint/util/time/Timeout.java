@@ -1,7 +1,5 @@
 package polytech.devint.util.time;
 
-import polytech.devint.util.VoidLambda;
-
 /**
  * @author Gunther Jungbluth (gunther.jungbluth.poirier@gmail.com)
  */
@@ -36,12 +34,12 @@ public class Timeout {
   /**
    * Executes a function if canProceed() is true
    *
-   * @param function
+   * @param method
    */
-  public void tryTo(VoidLambda function) {
+  public void tryTo(Runnable method) {
     if (canProceed()) {
       proceed();
-      function.execute();
+      method.run();
     }
   }
 }
