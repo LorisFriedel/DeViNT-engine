@@ -1,79 +1,71 @@
-package polytech.devint.view.swing;
+package polytech.devint.view.swing.menu;
 
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
-import java.awt.event.MouseAdapter;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
-
-import polytech.devint.entity.Button;
-import polytech.devint.entity.Menu;
-import polytech.devint.event.entity.ButtonClickEvent;
-import polytech.devint.model.Model;
+import polytech.devint.model.menu.ButtonTriggeredEvent;
+import polytech.devint.model.menu.SwingMenuModel;
 import polytech.devint.view.ContextHelp;
 import polytech.devint.view.configuration.DisplayConfiguration;
 import polytech.devint.view.configuration.Palette;
+import polytech.devint.view.swing.SwingView;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.util.*;
+import java.util.List;
 
 /**
- * A display based on a menu (button list)
+ * A swing view based on a menu (button list)
  * Before being initialized, this view MUST HAVE A MENU with at least one button.
  *
- * @param <M>
- * @author Gunther Jungbluth (gunther.jungbluth.poirier@gmail.com)
+ * @author Friedel Loris
  */
-public class SwingMenuView<M extends Model> extends SwingView<M> {
+public class SwingMenuView<M extends SwingMenuModel> extends SwingView<M> {
+
+  protected final String menuName;
+
+  protected final Map<Button, JButton> registeredButtons;
+  protected final List<Button> currentButtonList;
 
   protected final LayoutManager layoutManager;
   protected final GridBagConstraints menuConstraints;
   protected final GridBagConstraints buttonConstraints;
 
-  protected Menu<M> currentMenu;
-  protected final Map<Button<M>, JButton> registeredButtons;
-  protected final List<Button<M>> buttonList;
-  protected Button<M> currentSelection;
-  protected final String name;
+  protected Button currentSelectedButton;
   protected JLabel labelMenuName;
   protected JPanel buttonPanel;
   protected JPanel buttonSubPanel;
 
+  public enum Direction {
+    UP, DOWN
+  }
 
   /**
    * Instantiates a new swing menu view
    * Before being initialized, this view MUST HAVE A MENU with at least one button.
    *
-   * @param name        name of the menu
+   * @param menuName    menuName of the menu
    * @param contextHelp help of this view context
    */
-  public SwingMenuView(String name, ContextHelp contextHelp) {
-    this(getDefaultFrame(), contextHelp, name);
+  public SwingMenuView(String menuName, ContextHelp contextHelp) {
+    this(getDefaultFrame(), contextHelp, menuName);
   }
+
+  // TODO when initialized, make the first button selected instead of null
 
   /**
    * Instantiates a menu under a jframe
    * Before being initialized, this view MUST HAVE A MENU with at least one button.
    *
-   * @param frame       the jframe
-   * @param name        name of the menu
+   * @param frame       the Jframe
+   * @param menuName    menuName of the menu
    * @param contextHelp help of this view context
    */
-  public SwingMenuView(JFrame frame, ContextHelp contextHelp, String name) {
+  public SwingMenuView(JFrame frame, ContextHelp contextHelp, String menuName) {
     super(frame, contextHelp);
+    this.menuName = menuName;
     this.registeredButtons = new HashMap<>();
-    this.name = name;
-    this.buttonList = new LinkedList<>();
+    this.currentButtonList = new LinkedList<>();
     this.layoutManager = generateLayoutManager();
     this.menuConstraints = generateMenuConstraints();
     this.buttonConstraints = generateButtonConstraints();
@@ -114,9 +106,11 @@ public class SwingMenuView<M extends Model> extends SwingView<M> {
 
   @Override
   public void initCustomContent() {
+    assert !getLinkedModel().getButtons().isEmpty();
+
     // Draw the menu
-    currentSelection = null;
     drawMenu();
+    changeButtonSelection(Direction.DOWN);
     update();
   }
 
@@ -127,24 +121,14 @@ public class SwingMenuView<M extends Model> extends SwingView<M> {
   }
 
   /**
-   * Register a new menu under the view
-   *
-   * @param menu the menu to register
-   */
-  public void registerMenu(Menu<M> menu) {
-    currentMenu = menu;
-  }
-
-  /**
    * Draws the menu
    */
   protected void drawMenu() { // TODO comment this method
     // We clear the lists/maps
     currentPanel.removeAll();
-    registeredButtons.clear();
     currentPanel.setLayout(layoutManager);
 
-    // Adding the name?
+    // Adding the menuName?
 
     menuConstraints.gridy = 0;
     menuConstraints.weighty = 3;
@@ -169,23 +153,12 @@ public class SwingMenuView<M extends Model> extends SwingView<M> {
   }
 
   /**
-   * Update the font of the given JLabel according to the current display configuration
-   *
-   * @param jLabel JLabel to update
-   */
-  protected void updateLabelFont(JLabel jLabel) {
-    jLabel.setFont(getUpdatedFont(jLabel.getFont()));
-    jLabel.setForeground(
-            DisplayConfiguration.getDefaultDisplay().getCurrentPalette().getForegroundColor1());
-  }
-
-  /**
    * Generate a brand new labelMenuName, ready to be added to the menu The text is centered
    *
    * @return a brand new labelMenuName, ready to be added to the menus
    */
   protected JLabel generateLabelMenuName() {
-    JLabel resultLabel = new JLabel(name);
+    JLabel resultLabel = new JLabel(menuName);
     resultLabel.setHorizontalAlignment(SwingConstants.CENTER);
     updateLabelFont(resultLabel);
     return resultLabel;
@@ -202,20 +175,22 @@ public class SwingMenuView<M extends Model> extends SwingView<M> {
     buttonSubPanel = new JPanel();
     buttonSubPanel.setBackground(
             DisplayConfiguration.getDefaultDisplay().getCurrentPalette().getBackgroundColor1());
-    List<Button<M>> currentButtonList = currentMenu.getButtons();
 
-    GridLayout gridLayout = new GridLayout(currentButtonList.size(), 1);
+    List<Button> buttonList = getController().getModel().getButtons();
+
+    GridLayout gridLayout = new GridLayout(buttonList.size(), 1);
     gridLayout.setVgap(20);
     buttonSubPanel.setLayout(gridLayout);
 
-    buttonList.clear();
+    currentButtonList.clear();
+    registeredButtons.clear();
     // Create and add all button in the list
-    currentButtonList.forEach(button -> {
+    buttonList.forEach(button -> {
       JButton jbutton = new JButton(button.getName());
       buttonSubPanel.add(jbutton);
       initButton(button, jbutton);
       registeredButtons.put(button, jbutton);
-      buttonList.add(button);
+      currentButtonList.add(button);
     });
 
     buttonConstraints.weightx = 1;
@@ -239,28 +214,28 @@ public class SwingMenuView<M extends Model> extends SwingView<M> {
    * @param button  The button
    * @param jbutton The corresponding jbutton
    */
-  protected void initButton(Button<M> button, JButton jbutton) {
+  protected void initButton(Button button, JButton jbutton) {
     // Adding the action listener
-    jbutton.addActionListener(e -> controller.getEventManager().notify(new ButtonClickEvent(button)));
+    jbutton.addActionListener(e -> getController().notifySelf(new ButtonTriggeredEvent(button)));
 
     // Adding the mouse listener
     jbutton.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseEntered(java.awt.event.MouseEvent evt) {
-        currentSelection = button;
+        currentSelectedButton = button;
         updateButtons();
       }
 
       @Override
       public void mouseExited(java.awt.event.MouseEvent evt) {
-        currentSelection = null;
+        currentSelectedButton = null;
         updateButtons();
       }
     });
   }
 
   /**
-   * Updates the color of the buttons
+   * Updates the button's colors
    */
   protected void updateButtons() {
     Palette palette = DisplayConfiguration.getDefaultDisplay().getCurrentPalette();
@@ -291,7 +266,7 @@ public class SwingMenuView<M extends Model> extends SwingView<M> {
    * @param jbutton the corresponding jbutton
    */
   public void updateColorButton(Palette palette, Button button, JButton jbutton) {
-    if (button.equals(currentSelection)) {
+    if (button.equals(currentSelectedButton)) {
       jbutton.setBackground(palette.getBackgroundColor2());
       jbutton.setForeground(palette.getForegroundColor2());
     } else {
@@ -301,7 +276,7 @@ public class SwingMenuView<M extends Model> extends SwingView<M> {
   }
 
   /**
-   * Updating buttons
+   * Updates buttons
    */
   @Override
   public void update() {
@@ -312,59 +287,50 @@ public class SwingMenuView<M extends Model> extends SwingView<M> {
             DisplayConfiguration.getDefaultDisplay().getCurrentPalette().getBackgroundColor1());
   }
 
-  public void changeButtonSelection(ButtonChangeDirection direction) {
-    Iterator<Button<M>> buttons = buttonList.iterator();
-    if (!buttons.hasNext()) {
-      return;
+
+  /// TODO Review this !!!
+  /// TODO Review this !!!
+  /// TODO Review this !!!
+  public void changeButtonSelection(Direction direction) {
+    Iterator<Button> buttons = currentButtonList.iterator();
+    if (currentSelectedButton == null) {
+      currentSelectedButton = buttons.next();
+    } else {
+      handleButtonChange(direction, buttons);
     }
-    if (currentSelection == null) {
-      currentSelection = buttons.next();
-      update();
-      return;
-    }
-    handleButtonChange(direction, buttons);
     update();
   }
 
-  /**
-   * Handle a button change
-   *
-   * @param direction
-   * @param buttons
-   */
-  protected void handleButtonChange(ButtonChangeDirection direction, Iterator<Button<M>> buttons) {
+  /// TODO Review this !!!
+  /// TODO Review this !!!
+  /// TODO Review this !!!
+  protected void handleButtonChange(Direction direction, Iterator<Button> buttons) {
     switch (direction) {
       case DOWN:
         while (buttons.hasNext()) {
-          Button<M> next = buttons.next();
-          if (next == currentSelection) {
+          Button next = buttons.next();
+          if (next == currentSelectedButton) {
             // On prend le suivant
-            currentSelection = buttons.hasNext() ? buttons.next() : buttonList.get(0);
+            currentSelectedButton = buttons.hasNext() ? buttons.next() : currentButtonList.get(0);
             break;
           }
         }
         break;
       case UP:
-        Button<M> previous = buttons.next();
+        Button previous = buttons.next();
         while (buttons.hasNext()) {
-          Button<M> next = buttons.next();
-          if (next == currentSelection) {
+          Button next = buttons.next();
+          if (next == currentSelectedButton) {
             break;
           }
           previous = next;
         }
-        currentSelection = previous;
+        currentSelectedButton = previous;
         break;
     }
   }
 
-  public void pressButton() {
-    if (currentSelection != null) {
-      currentSelection.update();
-    }
-  }
-
-  public enum ButtonChangeDirection {
-    UP, DOWN
+  public Button getCurrentSelectedButton() {
+    return currentSelectedButton;
   }
 }

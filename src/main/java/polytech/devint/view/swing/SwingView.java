@@ -94,7 +94,7 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
   /**
    * Initiates a default swing view
    */
-  static JFrame getDefaultFrame() {
+  protected static JFrame getDefaultFrame() {
     if (defaultView != null) {
       return defaultView;
     }

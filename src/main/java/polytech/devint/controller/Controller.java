@@ -1,8 +1,6 @@
 package polytech.devint.controller;
 
 import java.util.*;
-import java.util.function.Consumer;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -112,7 +110,7 @@ public abstract class Controller<M extends Model, V extends View<M>> {
    * Update all active views
    */
   public void updateViews() {
-    forEachViews(v -> {
+    getViews().forEach(v -> {
       if (v.isActive()) {
         v.update();
       }
@@ -120,10 +118,10 @@ public abstract class Controller<M extends Model, V extends View<M>> {
   }
 
   /**
-   * Executes a lambda on each view
+   * @return all view currently linked to this controller
    */
-  public void forEachViews(Consumer<V> consumer) {
-    views.forEach(consumer);
+  public List<V> getViews() {
+    return views;
   }
 
   /**

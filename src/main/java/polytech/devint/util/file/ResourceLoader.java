@@ -25,10 +25,10 @@ public final class ResourceLoader {
   }
 
   /**
-   * Load the image icon from the given folder and with the given name
+   * Load the image icon from the given folder and with the given menuName
    *
    * @param folder folder (in the resource directory) that contains the file to load
-   * @param name   name of the image file to load
+   * @param name   menuName of the image file to load
    * @return an instance of the image icon corresponding to the loaded image file
    */
   public final ImageIcon loadImageIcon(String folder, String name) {
@@ -41,10 +41,10 @@ public final class ResourceLoader {
 
 
   /**
-   * Load the file that is in the given folder with the given name.
+   * Load the file that is in the given folder with the given menuName.
    *
    * @param folder folder in which the file is
-   * @param name   name of the file we want to load
+   * @param name   menuName of the file we want to load
    * @return an instance of a file we wanted to load if it was possible
    */
   public final File loadFileFrom(String folder, String name) {

@@ -6,14 +6,13 @@ import polytech.devint.event.basic.F1Event;
 import polytech.devint.event.basic.F2Event;
 import polytech.devint.event.basic.F3Event;
 import polytech.devint.event.basic.F4Event;
-import polytech.devint.event.entity.ButtonClickEvent;
 import polytech.devint.model.Model;
 import polytech.devint.util.time.Timeout;
 import polytech.devint.view.DevintView;
 import polytech.devint.view.configuration.DisplayConfiguration;
 
 /**
- * @param <M>
+ * @param <M> Model that the controller can manage
  * @author Loris Friedel
  */
 public abstract class DevintController<M extends Model, V extends DevintView<M>>
@@ -27,24 +26,14 @@ public abstract class DevintController<M extends Model, V extends DevintView<M>>
     super(model);
   }
 
-  /**
-   * Executed when a button is being pressed
-   *
-   * @param event The corresponding event
-   */
-  @EventHandler
-  public final void onButtonClick(ButtonClickEvent event) {
-    event.getEntity().update();
-  }
-
   @EventHandler
   public final void askForHelp(F1Event event) {
-    forEachViews(DevintView::playHelp);
+    getViews().forEach(DevintView::playHelp);
   }
 
   @EventHandler
   public final void askForDetailedHelp(F2Event event) {
-    forEachViews(DevintView::playDetailedHelp);
+    getViews().forEach(DevintView::playDetailedHelp);
   }
 
   @EventHandler
@@ -58,4 +47,6 @@ public abstract class DevintController<M extends Model, V extends DevintView<M>>
     DisplayConfiguration.getDefaultDisplay().nextFont();
     updateViews();
   }
+
+  // TODO onEscape -> back to the main menu
 }

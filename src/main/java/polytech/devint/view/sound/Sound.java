@@ -91,7 +91,7 @@ public class Sound extends Identifiable<Integer> {
   }
 
   /**
-   * @return the name of the file that contains the current sound
+   * @return the menuName of the file that contains the current sound
    */
   public String getName() {
     return name;

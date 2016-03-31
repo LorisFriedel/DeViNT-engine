@@ -18,7 +18,7 @@ public class Font extends Identifiable<String> {
   /**
    * Initiates a DeViNTFont from specified id and font
    *
-   * @param id         name of the font
+   * @param id         menuName of the font
    * @param fontFamily style of the font
    * @param size       the point size of the font
    */

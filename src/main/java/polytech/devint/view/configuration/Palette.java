@@ -24,7 +24,7 @@ public class Palette extends Identifiable<String> {
     /**
      * Instantiates a palette with all its mandatory colours
      *
-     * @param id               name (identifier) of the palette (used to get it from the map)
+     * @param id               menuName (identifier) of the palette (used to get it from the map)
      * @param backgroundColor1 global background color of all non-button elements (also the
      *                         background color of a clicked button)
      * @param foregroundColor1 global foreground (font) color of all non-button elements

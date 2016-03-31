@@ -9,14 +9,14 @@ import org.junit.Test;
 
 import polytech.devint.controller.input.InputConfiguration;
 import polytech.devint.model.Model;
-import polytech.devint.view.swing.SwingMenuView;
+import polytech.devint.view.swing.SwingView;
 
 /**
  * @author Loris Friedel
  */
 public class ControllerTest {
 
-  class ControllerDefault extends Controller<Model, SwingMenuView<Model>> {
+  class ControllerDefault extends Controller<Model, SwingView<Model>> {
     public ControllerDefault(Model model, InputConfiguration inputConfiguration) {
       super(model, inputConfiguration);
     }
@@ -48,7 +48,7 @@ public class ControllerTest {
     assertTrue(controller.views.isEmpty());
 
     @SuppressWarnings("unchecked")
-    SwingMenuView<Model> v = mock(SwingMenuView.class);
+    SwingView<Model> v = mock(SwingView.class);
     controller.addView(v);
 
     assertEquals(1, controller.views.size());

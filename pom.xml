@@ -6,7 +6,7 @@
 	<artifactId>devint-engine</artifactId>
 	<packaging>jar</packaging>
 	<version>1.1-SNAPSHOT</version>
-	<name>DeViNT Engine</name>
+	<menuName>DeViNT Engine</menuName>
 	<url>http://polytech.unice.fr</url>
 
 	<properties>
@@ -18,7 +18,7 @@
 	<distributionManagement>
         <repository>
             <id>devint-repo</id>
-			<name>devint-engine</name>
+			<menuName>devint-engine</menuName>
             <url>https://mymavenrepo.com/repo/N3WVdAIetPqMO0ZH6X5e/devint/</url>
         </repository>
     </distributionManagement>
