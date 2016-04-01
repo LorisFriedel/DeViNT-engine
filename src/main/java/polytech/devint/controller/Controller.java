@@ -85,6 +85,20 @@ public abstract class Controller<M extends Model, V extends View<M>> extends Obs
   }
 
   /**
+   * Call the init method on all views that are linked to this controller.
+   */
+  public void initViews() {
+    getViews().forEach(View::init);
+  }
+
+  /**
+   * Call the destroy method on all views that are linked to this controller.
+   */
+  public void destroyViews() {
+    getViews().forEach(View::destroy);
+  }
+
+  /**
    * @return The input configuration of this controller.
    */
   public InputConfiguration getInputConfiguration() {
