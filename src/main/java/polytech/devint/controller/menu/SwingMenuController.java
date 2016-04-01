@@ -24,16 +24,6 @@ public class SwingMenuController<M extends SwingMenuModel> extends DevintControl
     super(model);
   }
 
-  /**
-   * Makes the controller listen to the model's event.
-   * 
-   * @return the controller now register as an observer of its model
-   */
-  public SwingMenuController<M> listenModel() {
-    getModel().getEventManager().registerObserver(this);
-    return this;
-  }
-
   @EventHandler
   public final void onUp(UpEvent event) {
     getViews().stream()

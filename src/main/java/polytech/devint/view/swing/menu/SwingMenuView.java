@@ -1,6 +1,8 @@
 package polytech.devint.view.swing.menu;
 
+import polytech.devint.event.*;
 import polytech.devint.model.menu.ButtonTriggeredEvent;
+import polytech.devint.model.menu.ForwardToControllerEvent;
 import polytech.devint.model.menu.SwingMenuModel;
 import polytech.devint.view.ContextHelp;
 import polytech.devint.view.configuration.DisplayConfiguration;
@@ -332,5 +334,14 @@ public class SwingMenuView<M extends SwingMenuModel> extends SwingView<M> {
 
   public Button getCurrentSelectedButton() {
     return currentSelectedButton;
+  }
+
+  /**
+   * Redirect the given event to the controller of this view.
+   *
+   * @param event Event to pass to the controller.
+   */
+  protected final void redirectToController(ForwardToControllerEvent event) {
+    notifyController(event.getEventToForward());
   }
 }
