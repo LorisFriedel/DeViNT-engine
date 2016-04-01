@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  */
 public class TimerTest {
 
-  private static final int ERROR_MARGIN = 4; // depends on the configure, waiting for a better solution
+  private static final int ERROR_MARGIN = 6; // depends on the configure, waiting for a better solution
 
   class TimerDefault extends Timer {
     static final long DEFAULT_DURATION = 1000L;
