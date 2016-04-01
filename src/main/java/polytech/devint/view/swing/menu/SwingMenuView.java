@@ -1,13 +1,11 @@
 package polytech.devint.view.swing.menu;
 
-import polytech.devint.event.*;
-import polytech.devint.model.menu.ButtonTriggeredEvent;
-import polytech.devint.model.menu.ForwardToControllerEvent;
 import polytech.devint.model.menu.SwingMenuModel;
 import polytech.devint.view.ContextHelp;
 import polytech.devint.view.configuration.DisplayConfiguration;
 import polytech.devint.view.configuration.Palette;
 import polytech.devint.view.swing.SwingView;
+import polytech.devint.view.swing.menu.event.ButtonTriggeredEvent;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -218,7 +216,7 @@ public class SwingMenuView<M extends SwingMenuModel> extends SwingView<M> {
    */
   protected void initButton(Button button, JButton jbutton) {
     // Adding the action listener
-    jbutton.addActionListener(e -> getController().notifySelf(new ButtonTriggeredEvent(button)));
+    jbutton.addActionListener(e -> notifyController(new ButtonTriggeredEvent(button)));
 
     // Adding the mouse listener
     jbutton.addMouseListener(new MouseAdapter() {
@@ -334,14 +332,5 @@ public class SwingMenuView<M extends SwingMenuModel> extends SwingView<M> {
 
   public Button getCurrentSelectedButton() {
     return currentSelectedButton;
-  }
-
-  /**
-   * Redirect the given event to the controller of this view.
-   *
-   * @param event Event to pass to the controller.
-   */
-  protected final void redirectToController(ForwardToControllerEvent event) {
-    notifyController(event.getEventToForward());
   }
 }

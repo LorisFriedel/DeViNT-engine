@@ -14,10 +14,10 @@ public abstract class SchedulerReady {
   private final ScheduledThreadPoolExecutor executor;
 
   private static final ScheduledThreadPoolExecutor DEFAULT_EXECUTOR;
-  private static final int DEFAULT_THREAD_POOL_SIZE = 1;
+  private static final int DEFAULT_THREAD_POOL_SIZE = 2;
 
   static {
-    DEFAULT_EXECUTOR = new ScheduledThreadPoolExecutor(1);
+    DEFAULT_EXECUTOR = new ScheduledThreadPoolExecutor(DEFAULT_THREAD_POOL_SIZE);
   }
 
   public SchedulerReady(int corePoolSize) {

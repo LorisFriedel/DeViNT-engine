@@ -34,7 +34,6 @@ public class ControllerTest {
     // views it contains
     assertEquals(model, controller.getModel());
     assertEquals(config, controller.getInputConfiguration());
-    assertNotNull(controller.getEventManager());
   }
 
   @Test
@@ -44,16 +43,16 @@ public class ControllerTest {
     // Create a controller that contains an empty model and an empty config
     ControllerDefault controller = new ControllerDefault(model, config);
 
-    assertNotNull(controller.views);
-    assertTrue(controller.views.isEmpty());
+    assertNotNull(controller.getViews());
+    assertTrue(controller.getViews().isEmpty());
 
     @SuppressWarnings("unchecked")
     SwingView<Model> v = mock(SwingView.class);
     controller.addView(v);
 
-    assertEquals(1, controller.views.size());
+    assertEquals(1, controller.getViews().size());
 
     controller.removeView(v);
-    assertTrue(controller.views.isEmpty());
+    assertTrue(controller.getViews().isEmpty());
   }
 }

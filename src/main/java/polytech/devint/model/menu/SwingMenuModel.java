@@ -1,7 +1,6 @@
 package polytech.devint.model.menu;
 
 import polytech.devint.model.Model;
-import polytech.devint.scheduler.SchedulerReady;
 import polytech.devint.view.swing.menu.Button;
 
 import java.util.LinkedList;

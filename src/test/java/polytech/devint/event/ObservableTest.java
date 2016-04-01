@@ -12,21 +12,21 @@ import org.junit.Test;
  * @author Günther Jungbluth (gunther.jungbluth.poirier@gmail.com)
  *
  */
-public class EventManagerTest {
+public class ObservableTest {
 
   /**
    * Testing if the current method handlers are being called
    */
   @Test
   public void testEvents() {
-    EventManager eventManager = new EventManager();
+    Observable eventManager = new Observable();
     TestObserver tester = new TestObserver();
-    eventManager.registerObserver(tester);
+    eventManager.addObserver(tester);
     CustomEvent customEvent = new CustomEvent();
     // Fields should be false by default
     assertFalse(tester.onEvent);
     assertFalse(tester.onCustomEvent);
-    eventManager.notify(customEvent);
+    eventManager.notifyObservers(customEvent);
     // Only the method onCustomEvent should be called
     assertFalse(tester.onEvent);
     assertTrue(tester.onCustomEvent);
@@ -38,9 +38,9 @@ public class EventManagerTest {
    */
   @Test
   public void testRegister() {
-    EventManager eventManager = new EventManager();
+    Observable eventManager = new Observable();
     TestObserver tester = new TestObserver();
-    eventManager.registerObserver(tester);
+    eventManager.addObserver(tester);
     assertTrue(eventManager.hasObserver(tester));
     assertTrue(eventManager.observers.containsKey(tester));
   }
@@ -51,10 +51,10 @@ public class EventManagerTest {
    */
   @Test
   public void testRemove() {
-    EventManager eventManager = new EventManager();
+    Observable eventManager = new Observable();
     TestObserver tester = new TestObserver();
-    eventManager.registerObserver(tester);
-    eventManager.removeObserver(tester);
+    eventManager.addObserver(tester);
+    eventManager.deleteObserver(tester);
     assertFalse(eventManager.hasObserver(tester));
     assertFalse(eventManager.observers.containsKey(tester));
   }
@@ -65,10 +65,10 @@ public class EventManagerTest {
    */
   @Test
   public void testRemoveAll() {
-    EventManager eventManager = new EventManager();
+    Observable eventManager = new Observable();
     TestObserver tester = new TestObserver();
-    eventManager.registerObserver(tester);
-    eventManager.removeAllObservers();
+    eventManager.addObserver(tester);
+    eventManager.deleteObservers();
     assertFalse(eventManager.hasObserver(tester));
     assertFalse(eventManager.observers.containsKey(tester));
   }
@@ -78,9 +78,9 @@ public class EventManagerTest {
    */
   @Test
   public void testHasEvent() {
-    EventManager eventManager = new EventManager();
+    Observable eventManager = new Observable();
     TestObserver tester = new TestObserver();
-    eventManager.registerObserver(tester);
+    eventManager.addObserver(tester);
     assertEquals(1, eventManager.observers.size());
     assertEquals(2, eventManager.observers.get(tester).size());
   }
