@@ -112,11 +112,21 @@ public abstract class View<M extends Model> {
   }
 
   /**
-   * Notify the controller that is currently attached to this view
+   * Notify the controller that is currently attached to this view.
+   * This method does the exact same thing as the <code>notifyObserver(Event event)</code> method.
    *
-   * @param event event that will be sent to the controller of this view
+   * @param event Event that will be sent to the controller of this view
    */
   public void notifyController(Event event) {
-    controller.getEventManager().notify(event);
+    notifyObserver(event);
+  }
+
+  /**
+   * Notify all object that are currently observing this view.
+   *
+   * @param event Event that will be sent to the controller of this view.
+   */
+  public void notifyObserver(Event event) {
+    getController().getEventManager().notify(event);
   }
 }

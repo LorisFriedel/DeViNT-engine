@@ -67,10 +67,20 @@ public abstract class Controller<M extends Model, V extends View<M>> {
 
   /**
    * Send a notification to the current controller.
+   * This method does the exact same thing as the <code>notifyObserver(Event event)</code> method.
    *
    * @param event event to send to itself
    */
   public void notifySelf(Event event) {
+    notifyObserver(event);
+  }
+
+  /**
+   * Send a notification to the current controller (this).
+   *
+   * @param event event to send to itself
+   */
+  public void notifyObserver(Event event) {
     getEventManager().notify(event);
   }
 

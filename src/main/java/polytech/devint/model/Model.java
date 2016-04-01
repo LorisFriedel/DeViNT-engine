@@ -37,10 +37,21 @@ public abstract class Model {
 
   /**
    * Notify all views that observes this model with the given event
+   * This method does the exact same thing as the <code>notifyObserver(Event event)</code> method.
    *
    * @param event event that will be sent to all views that observes this model
    */
   public void notifyViews(Event event) {
+    notifyObserver(event);
+  }
+
+
+  /**
+   * Notify all object that are observing this model with the given event.
+   *
+   * @param event event that will be sent to all observer that observes this model
+   */
+  public void notifyObserver(Event event) {
     getEventManager().notify(event);
   }
 }
