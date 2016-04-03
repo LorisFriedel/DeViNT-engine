@@ -8,6 +8,7 @@ import static org.mockito.Mockito.mock;
 import org.junit.Test;
 
 import polytech.devint.controller.input.InputConfiguration;
+import polytech.devint.controller.input.SwingInputConfiguration;
 import polytech.devint.model.Model;
 import polytech.devint.view.swing.SwingView;
 
@@ -25,7 +26,8 @@ public class ControllerTest {
   @Test
   public void basicConstruction() {
     Model model = mock(Model.class);
-    InputConfiguration config = mock(InputConfiguration.class);
+    SwingInputConfiguration configSwing = mock(SwingInputConfiguration.class);
+    InputConfiguration config = new InputConfiguration().addConfig(DevintController.SWING_CONFIG_KEY, configSwing);
     // Create a controller that contains an empty model and an empty config
     ControllerDefault controller = new ControllerDefault(model, config);
 
@@ -39,7 +41,8 @@ public class ControllerTest {
   @Test
   public void addAndRemoveView() {
     Model model = mock(Model.class);
-    InputConfiguration config = mock(InputConfiguration.class);
+    SwingInputConfiguration configSwing = mock(SwingInputConfiguration.class);
+    InputConfiguration config = new InputConfiguration().addConfig(DevintController.SWING_CONFIG_KEY, configSwing);
     // Create a controller that contains an empty model and an empty config
     ControllerDefault controller = new ControllerDefault(model, config);
 

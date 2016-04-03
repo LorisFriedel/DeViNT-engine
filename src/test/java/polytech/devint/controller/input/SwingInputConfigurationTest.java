@@ -16,13 +16,13 @@ import polytech.devint.event.basic.F6Event;
 /**
  * @author Loris Friedel
  */
-public class InputConfigurationTest {
+public class SwingInputConfigurationTest {
 
-  InputConfiguration config;
+  SwingInputConfiguration config;
 
   @Before
   public void init() {
-    config = new InputConfiguration();
+    config = new SwingInputConfiguration();
   }
 
   /**
@@ -30,7 +30,7 @@ public class InputConfigurationTest {
    */
   @Test
   public void defaultConfiguration() {
-    InputConfiguration config = new InputConfiguration();
+    SwingInputConfiguration config = new SwingInputConfiguration();
 
     // The default configuration should be present
     assertTrue(config.getKeyPressedOnceEvents(KeyEvent.VK_F1).isPresent());

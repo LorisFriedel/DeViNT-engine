@@ -1,6 +1,7 @@
 package polytech.devint.controller;
 
 import polytech.devint.controller.input.InputConfiguration;
+import polytech.devint.controller.input.SwingInputConfiguration;
 import polytech.devint.event.EventHandler;
 import polytech.devint.event.basic.*;
 import polytech.devint.model.Model;
@@ -24,13 +25,19 @@ public abstract class DevintController<M extends Model, V extends DevintView<M>>
         extends Controller<M, V> {
 
   private static List<View<?>> mainViews = new ArrayList<>();
+  public static final String SWING_CONFIG_KEY = "SWING";
 
   public DevintController(M model, InputConfiguration inputConfiguration) {
     super(model, inputConfiguration);
   }
 
+  /**
+   * Create a controller from a default input config
+   *
+   * @param model Model that the controller will control
+   */
   public DevintController(M model) {
-    super(model);
+    this(model, new InputConfiguration().addConfig("SWING", new SwingInputConfiguration()));
   }
 
   @EventHandler

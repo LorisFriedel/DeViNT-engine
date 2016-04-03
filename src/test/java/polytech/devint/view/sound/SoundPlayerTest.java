@@ -41,7 +41,7 @@ public class SoundPlayerTest {
 
     sp.playQueue();
 
-    long marginMs = 40;
+    long marginMs = 100;
     Thread.sleep(s.getDuration()*3 + marginMs);
 
     verify(sp, times(3)).stopIfPlaying();

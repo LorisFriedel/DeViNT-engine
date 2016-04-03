@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import org.junit.Test;
 
 import polytech.devint.controller.Controller;
+import polytech.devint.controller.input.InputConfiguration;
 import polytech.devint.model.Model;
 import polytech.devint.view.ContextHelp;
 
@@ -25,7 +26,7 @@ public class SwingViewTest {
   @Test
   public void testInitView() {
     Model m = new Model() {};
-    Controller<Model, SwingTestView> c = new Controller<Model, SwingTestView>(m) {};
+    Controller<Model, SwingTestView> c = new Controller<Model, SwingTestView>(m, mock(InputConfiguration.class)) {};
     SwingTestView v = spy(new SwingTestView(mock(JFrame.class)));
     c.addView(v);
     v.init();

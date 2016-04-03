@@ -2,6 +2,7 @@ package polytech.devint.controller.menu;
 
 import polytech.devint.controller.DevintController;
 import polytech.devint.controller.input.InputConfiguration;
+import polytech.devint.controller.input.SwingInputConfiguration;
 import polytech.devint.event.EventHandler;
 import polytech.devint.event.basic.DownEvent;
 import polytech.devint.event.basic.EnterEvent;

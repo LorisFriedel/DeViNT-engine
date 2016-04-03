@@ -31,15 +31,6 @@ public abstract class Controller<M extends Model, V extends View<M>> extends Obs
   }
 
   /**
-   * Create a controller from a default input config
-   *
-   * @param model model that the controller will control
-   */
-  public Controller(M model) {
-    this(model, new InputConfiguration());
-  }
-
-  /**
    * @return the model that the controller is controlling for now
    */
   public M getModel() {

@@ -8,6 +8,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import polytech.devint.controller.Controller;
+import polytech.devint.controller.DevintController;
+import polytech.devint.controller.input.SwingInputConfiguration;
 import polytech.devint.event.*;
 import polytech.devint.event.Observable;
 import polytech.devint.model.Model;
@@ -24,14 +26,14 @@ public class SwingKeyDispatcher<M extends Model, V extends View<M>> extends Obse
 
   private static final Logger LOGGER = LogManager.getLogger(Controller.class);
 
-  private final Controller<M, V> controller;
+  private final SwingInputConfiguration configuration;
   private final Set<Integer> waitingRelease;
 
   // TODO make it specific to a SwingView or at least a DevintView ?
   // TODO make it specific to a KeyboardInputConfiguration
 
   public SwingKeyDispatcher(Controller<M, V> controller) {
-    this.controller = controller;
+    this.configuration = controller.getInputConfiguration().getConfig(DevintController.SWING_CONFIG_KEY);
     this.waitingRelease = new HashSet<>();
     addObserver(controller);
   }
@@ -50,9 +52,9 @@ public class SwingKeyDispatcher<M extends Model, V extends View<M>> extends Obse
     List<Class<? extends Event>> events = new ArrayList<>();
 
     Optional<List<Class<? extends Event>>> pressEvents =
-            controller.getInputConfiguration().getKeyPressedEvents(keyCode);
+            configuration.getKeyPressedEvents(keyCode);
     Optional<List<Class<? extends Event>>> pressOnceEvents =
-            controller.getInputConfiguration().getKeyPressedOnceEvents(keyCode);
+            configuration.getKeyPressedOnceEvents(keyCode);
 
     if (!waitingRelease.contains(keyCode) && pressOnceEvents.isPresent()) {
       waitingRelease.add(keyCode);
@@ -70,7 +72,7 @@ public class SwingKeyDispatcher<M extends Model, V extends View<M>> extends Obse
     waitingRelease.remove(keyCode);
 
     Optional<List<Class<? extends Event>>> releaseEvents =
-            controller.getInputConfiguration().getKeyReleasedEvents(keyCode);
+            configuration.getKeyReleasedEvents(keyCode);
 
     if (releaseEvents.isPresent()) {
       notifyObservers(releaseEvents.get());
