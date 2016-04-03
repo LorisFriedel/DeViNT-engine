@@ -12,6 +12,8 @@ import polytech.devint.view.View;
  */
 public abstract class Controller<M extends Model, V extends View<M>> extends Observable {
 
+  // TODO interface for input configuration ? -> allow more type of configuration
+  // an input configuration is not always a keyboard configuration used in a swing keyEventDispatcher
   private final InputConfiguration inputConfiguration;
   private final List<V> views;
   private final M model;

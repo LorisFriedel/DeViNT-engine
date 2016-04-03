@@ -115,6 +115,7 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
     initPanel();
     frame.setContentPane(currentPanel);
     // Using AWT to register our keyboard inputs
+    // TODO in a swing view we need a controller that support a keyboard input configuration
     currentKeyDispatcher = new SwingKeyDispatcher<>(controller);
     KeyboardFocusManager.getCurrentKeyboardFocusManager()
             .addKeyEventDispatcher(currentKeyDispatcher);

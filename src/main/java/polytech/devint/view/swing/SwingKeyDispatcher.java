@@ -27,11 +27,9 @@ public class SwingKeyDispatcher<M extends Model, V extends View<M>> extends Obse
   private final Controller<M, V> controller;
   private final Set<Integer> waitingRelease;
 
-  /**
-   * Instantiates a new key dispatcher under a controller
-   *
-   * @param controller The controller
-   */
+  // TODO make it specific to a SwingView or at least a DevintView ?
+  // TODO make it specific to a KeyboardInputConfiguration
+
   public SwingKeyDispatcher(Controller<M, V> controller) {
     this.controller = controller;
     this.waitingRelease = new HashSet<>();

@@ -72,8 +72,8 @@ public class TimerTest {
     timer.pause();
     System.out.print(""); // magic trick
 
-    assertTrue(timer.getElapsedTime() >= pauseAfter - 4*interval
-            && timer.getElapsedTime() <= pauseAfter + 4*interval);
+    assertTrue(timer.getElapsedTime() >= pauseAfter - ERROR_MARGIN*interval
+            && timer.getElapsedTime() <= pauseAfter + ERROR_MARGIN*interval);
   }
 
   @Test
