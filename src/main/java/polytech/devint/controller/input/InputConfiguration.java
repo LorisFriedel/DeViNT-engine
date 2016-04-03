@@ -1,5 +1,7 @@
 package polytech.devint.controller.input;
 
+import polytech.devint.controller.DevintController;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,5 +41,13 @@ public class InputConfiguration {
   public InputConfiguration addConfig(String key, IConfiguration configuration) {
     configMap.put(key, configuration);
     return this;
+  }
+
+  /**
+   * @return The swing configuration.
+   * @throws ConfigNotFoundException If there is not swing configuration in the input configuration object.
+   */
+  public SwingInputConfiguration getSwingConfig() {
+    return getConfig(DevintController.SWING_CONFIG_KEY);
   }
 }

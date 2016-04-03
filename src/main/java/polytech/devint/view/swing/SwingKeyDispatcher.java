@@ -13,27 +13,22 @@ import polytech.devint.controller.input.SwingInputConfiguration;
 import polytech.devint.event.*;
 import polytech.devint.event.Observable;
 import polytech.devint.model.Model;
-import polytech.devint.view.View;
 
 /**
  * A keyboard adapter to listen for keyboard inputs
  *
  * @param <M> Type of the model that the controller (which uses this key dispatcher) is controlling.
- * @param <V> Type of the view that the controller (which uses this key dispatcher) is using.
  * @author Loris Friedel
  */
-public class SwingKeyDispatcher<M extends Model, V extends View<M>> extends Observable implements KeyEventDispatcher {
+public class SwingKeyDispatcher<M extends Model> extends Observable implements KeyEventDispatcher {
 
   private static final Logger LOGGER = LogManager.getLogger(Controller.class);
 
   private final SwingInputConfiguration configuration;
   private final Set<Integer> waitingRelease;
 
-  // TODO make it specific to a SwingView or at least a DevintView ?
-  // TODO make it specific to a KeyboardInputConfiguration
-
-  public SwingKeyDispatcher(Controller<M, V> controller) {
-    this.configuration = controller.getInputConfiguration().getConfig(DevintController.SWING_CONFIG_KEY);
+  public SwingKeyDispatcher(Controller<M, ?> controller) {
+    this.configuration = controller.getInputConfiguration().getSwingConfig();
     this.waitingRelease = new HashSet<>();
     addObserver(controller);
   }
