@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import org.json.JSONException;
 import org.junit.Test;
+import polytech.devint.util.file.ResourceLoader;
 import polytech.devint.view.configuration.DisplayConfigurationLoader;
 import polytech.devint.view.configuration.Font;
 import polytech.devint.view.configuration.Palette;
@@ -28,7 +29,7 @@ public class DisplayConfigurationLoaderTest {
    */
   @Test
   public void correctLoadedConfig() throws JSONException, IOException {
-    File file = new File("src/main/resources/polytech/devint/defaultDisplay.conf");
+    File file = new ResourceLoader().loadFileFrom("polytech/devint/", "defaultDisplay.conf");
     FileInputStream fis = new FileInputStream(file);
     DisplayConfigurationLoader dcl = new DisplayConfigurationLoader(fis);
 

@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -21,6 +22,34 @@ public final class ResourceLoader {
 
   public ResourceLoader() {
     // does nothing
+  }
+
+  private String concat(String folder, String name) {
+    return rectify(folder) + "/" + rectify(name);
+  }
+
+  private String rectify(String str) {
+    if (!isValidPath(str)) {
+      throw new ResourceFileErrorException("Invalid path.");
+    }
+
+    String proper = str;
+    while (proper.endsWith("/")) {
+      proper = proper.substring(0, proper.length() - 1);
+    }
+    while (proper.startsWith("/")) {
+      proper = proper.substring(1, proper.length());
+    }
+    return proper;
+  }
+
+  private static boolean isValidPath(String path) {
+    try {
+      Paths.get(path);
+    } catch (InvalidPathException | NullPointerException ex) {
+      return false;
+    }
+    return true;
   }
 
   /**
@@ -47,7 +76,7 @@ public final class ResourceLoader {
    * @return An instance of the desired file.
    */
   public final File loadFileFrom(String folder, String name) {
-    return loadFileFrom(getClass().getClassLoader().getResource(folder + "/" + name));
+    return loadFileFrom(getClass().getClassLoader().getResource(concat(folder, name)));
   }
 
   /**
@@ -86,26 +115,22 @@ public final class ResourceLoader {
   /**
    * Load all file (and only file, not folder) from the given resource folder path
    * and check if there is at least one file loader.
-   * An exception is thrown if no file were found, or if the given path doesn't lead to a folder.
+   * An exception is thrown if the given path doesn't lead to a folder.
    *
    * @param resourceFolderPath Path of the resource folder in which the file we want to load are.
    * @return A list of file, non-empty, that were in the folder pointed by the given path.
    */
   public List<File> loadAllFilesFrom(String resourceFolderPath) {
-    // Resources loading
-    List<File> files
-            = loadAllFilesFrom(getClass().getClassLoader().getResource(resourceFolderPath));
+    /* Deprecated check
+    if (files.isEmpty()) { throw new ResourceFileErrorException(); } */
 
-    if (files.isEmpty()) {
-      throw new ResourceFileErrorException();
-    }
-
-    return files;
+    return loadAllFilesFrom(getClass().getClassLoader().getResource(rectify(resourceFolderPath)));
   }
 
   /**
    * Load all file (and only file, not folder) that are in the folder pointed by the given URL
    * and match the given predicate.
+   * An exception is thrown if the given path doesn't lead to a folder.
    *
    * @param url       Url of a folder from which we want to load file.
    * @param predicate Predicate that will filter files.

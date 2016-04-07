@@ -32,7 +32,7 @@ public class SwingViewTest {
     v.init();
     verify(v, times(1)).initCustomContent();
     // Checking if the JPanel has been properly added-
-    assertTrue(v.currentPanel != null);
+    assertTrue(v.getMainPanel() != null);
   }
 
   private class SwingTestView extends SwingView<Model> {

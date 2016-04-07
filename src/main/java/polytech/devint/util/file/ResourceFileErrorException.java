@@ -11,4 +11,8 @@ public class ResourceFileErrorException extends RuntimeException {
   public ResourceFileErrorException() {
     super();
   }
+
+  public ResourceFileErrorException(String msg) {
+    super(msg);
+  }
 }

@@ -49,7 +49,7 @@ public class CyclicIterator<T> implements Iterator<T> {
     T item = array[index++];
 
     if (index >= array.length) {
-      index = 0;
+      reset();
     }
 
     return item;

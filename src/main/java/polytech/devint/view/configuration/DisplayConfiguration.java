@@ -50,17 +50,15 @@ public class DisplayConfiguration {
    * @param id the id of the palette we want
    */
   public void selectPalette(String id) {
-    int size = palettes.size();
+    String endOfCycle = currentPalette.getId();
+    do {
+      nextPalette();
+    } while (!currentPalette.getId().equals(endOfCycle)
+            && !currentPalette.getId().equals(id));
 
-    for (int i = 0; i < size; i++) {
-      Palette p = palettes.next();
-      if (p.getId().equals(id)) {
-        currentPalette = p;
-        return;
-      }
+    if (!currentPalette.getId().equals(id)) {
+      throw new IllegalArgumentException("Palette with ID " + id + " not found.");
     }
-
-    throw new IllegalArgumentException("Palette with ID " + id + " not found.");
   }
 
   /**
@@ -69,17 +67,15 @@ public class DisplayConfiguration {
    * @param id the id of the font we want
    */
   public void selectFont(String id) {
-    int size = fonts.size();
+    String endOfCycle = currentFont.getId();
+    do {
+      nextFont();
+    } while (!currentFont.getId().equals(endOfCycle)
+            && !currentFont.getId().equals(id));
 
-    for (int i = 0; i < size; i++) {
-      Font f = fonts.next();
-      if (f.getId().equals(id)) {
-        currentFont = f;
-        return;
-      }
+    if (!currentFont.getId().equals(id)) {
+      throw new IllegalArgumentException("Font with ID " + id + " not found.");
     }
-
-    throw new IllegalArgumentException("Font with ID " + id + " not found.");
   }
 
   /**

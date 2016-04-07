@@ -10,25 +10,27 @@ import polytech.devint.model.Model;
 import polytech.devint.view.ContextHelp;
 import polytech.devint.view.DevintView;
 import polytech.devint.view.configuration.DisplayConfiguration;
-import polytech.devint.view.configuration.Palette;
 
 /**
- * Represents a Swing View
+ * Represents a Swing View.
+ * This view contains a JFrame and a JPanel when initialized.
+ * You must use the main JPanel
  *
  * @author Gunther Jungbluth (gunther.jungbluth.poirier@gmail.com)
+ * @author Loris Friedel
  */
 public abstract class SwingView<M extends Model> extends DevintView<M> {
 
   // TODO make dimension modular
-  public static final int DEFAULT_WIDTH = 800;
-  public static final int DEFAULT_HEIGHT = 600;
-  static final String DEFAULT_NAME = "DeViNT";
+  private static int defaultWidth = 800;
+  private static int defaultHeight = 600;
+  private static String defaultName = "DeViNT";
+  private static JFrame defaultFrame;
 
-  public static JFrame defaultView;
-  public SwingKeyDispatcher<M> currentKeyDispatcher;
-
-  protected JPanel currentPanel;
-  protected final JFrame frame;
+  private final JFrame frame;
+  private SwingKeyDispatcher<M> currentKeyDispatcher;
+  private JPanel mainPanel;
+  private boolean autoUpdate = true;
 
   /**
    * Instantiates a new swing view
@@ -41,32 +43,6 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
   }
 
   /**
-   * @return the current JFrame of the swing view.
-   */
-  public JFrame getFrame() {
-    return frame;
-  }
-
-  private void initPanel() {
-    this.currentPanel = new JPanel() {
-      @Override
-      protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        SwingView.this.paintComponent(g);
-      }
-    };
-
-    currentPanel.addComponentListener(new ComponentAdapter() {
-      @Override
-      public void componentResized(ComponentEvent e) {
-        if (isActive()) {
-          update();
-        }
-      }
-    });
-  }
-
-  /**
    * Instantiates a new view with the default frame and the given context help
    *
    * @param contextHelp help of this view
@@ -75,11 +51,64 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
     this(getDefaultFrame(), contextHelp);
   }
 
+
   /**
    * Instantiates a default new view with the default frame and default context help (empty)
    */
   public SwingView() {
     this(getDefaultFrame(), new ContextHelp());
+  }
+
+
+  /**
+   * Change the default dimension of all swing windows.
+   *
+   * @param width  New default width of all frame.
+   * @param height new default height of all frame.
+   */
+  public static void setDefaultDimension(int width, int height) {
+    SwingView.defaultWidth = width;
+    SwingView.defaultHeight = height;
+  }
+
+  /**
+   * Change the default name of all swing windows.
+   *
+   * @param name New default name of all frame.
+   */
+  public static void setDefaultName(String name) {
+    SwingView.defaultName = name;
+  }
+
+  /**
+   * @return The current JFrame of the swing view.
+   */
+  protected JFrame getFrame() {
+    return frame;
+  }
+
+  /**
+   * @return The main panel that is inside the JFrame of this window.
+   */
+  protected JPanel getMainPanel() {
+    return mainPanel;
+  }
+
+  private void initPanel() {
+    this.mainPanel = new JPanel() {
+      @Override
+      protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        SwingView.this.paintComponent(g);
+      }
+    };
+
+    mainPanel.addComponentListener(new ComponentAdapter() {
+      @Override
+      public void componentResized(ComponentEvent e) {
+        updateIfActive();
+      }
+    });
   }
 
   /**
@@ -95,17 +124,17 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
    * Initiates a default swing view
    */
   protected static JFrame getDefaultFrame() {
-    if (defaultView != null) {
-      return defaultView;
+    if (defaultFrame != null) {
+      return defaultFrame;
     }
 
-    defaultView = new JFrame();
-    defaultView.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-    defaultView.setTitle(DEFAULT_NAME);
-    defaultView.setLocationRelativeTo(null);
-    defaultView.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    defaultView.setExtendedState(defaultView.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-    return defaultView;
+    defaultFrame = new JFrame();
+    defaultFrame.setSize(defaultWidth, defaultHeight);
+    defaultFrame.setTitle(defaultName);
+    defaultFrame.setLocationRelativeTo(null);
+    defaultFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    defaultFrame.setExtendedState(defaultFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+    return defaultFrame;
   }
 
 
@@ -113,7 +142,7 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
   public void setupContent() {
     frame.setVisible(true);
     initPanel();
-    frame.setContentPane(currentPanel);
+    frame.setContentPane(mainPanel);
     // Using AWT to register our keyboard inputs
     currentKeyDispatcher = new SwingKeyDispatcher<>(controller);
     KeyboardFocusManager.getCurrentKeyboardFocusManager()
@@ -126,7 +155,7 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
 
   @Override
   public void destroyContent() {
-    currentPanel.removeAll();
+    mainPanel.removeAll();
     frame.setContentPane(new JPanel());
     KeyboardFocusManager.getCurrentKeyboardFocusManager()
             .removeKeyEventDispatcher(currentKeyDispatcher);
@@ -144,13 +173,62 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
   public abstract void destroyCustomContent();
 
   /**
-   * Called on each view update
+   * Updates all components of this swing view and repaint the JFrame.
    */
   @Override
   public void update() {
-    Palette palette = DisplayConfiguration.getDefaultDisplay().getCurrentPalette();
-    currentPanel.setBackground(palette.getBackgroundColor1());
+    if(isAutoUpdateActivated()) {
+      updateComponents();
+    }
     frame.repaint();
+  }
+
+  /**
+   * @return True is the auto update system is currently active, false otherwise.
+   */
+  public boolean isAutoUpdateActivated() {
+    return autoUpdate;
+  }
+
+  /**
+   * Activate the auto update system.
+   * By default, it is activated.
+   * This system automatically update JLabel and JPanel font and color according
+   * to the current display configuration of the program.
+   */
+  public void activateAutoUpdate() {
+    autoUpdate = true;
+  }
+
+  /**
+   * Disable the auto update system.
+   * JPanel and JLabel in this swing view will no longer be updated automatically.
+   */
+  public void disableAutoUpdate() {
+    autoUpdate = false;
+  }
+
+  private void updateIfActive() {
+    if(isActive()) {
+      update();
+    }
+  }
+
+  private void updateComponents() {
+    updateComponent(getFrame().getContentPane());
+  }
+
+  private void updateComponent(Component component) {
+    if(component instanceof JLabel) {
+      updateLabel((JLabel) component);
+    }
+    else if(component instanceof JPanel) {
+      JPanel panel = (JPanel) component;
+      updatePanelColor(panel);
+      for(Component c : panel.getComponents()) {
+        updateComponent(c);
+      }
+    }
   }
 
   /**

@@ -117,7 +117,7 @@ public class SwingMenuView<M extends SwingMenuModel> extends SwingView<M> {
   @Override
   public void destroyCustomContent() {
     // Remove all components
-    currentPanel.removeAll();
+    getMainPanel().removeAll();
   }
 
   /**
@@ -125,31 +125,24 @@ public class SwingMenuView<M extends SwingMenuModel> extends SwingView<M> {
    */
   protected void drawMenu() { // TODO comment this method
     // We clear the lists/maps
-    currentPanel.removeAll();
-    currentPanel.setLayout(layoutManager);
+    getMainPanel().removeAll();
+    getMainPanel().setLayout(layoutManager);
 
     // Adding the menuName?
 
     menuConstraints.gridy = 0;
     menuConstraints.weighty = 3;
     labelMenuName = generateLabelMenuName();
-    currentPanel.add(labelMenuName, menuConstraints);
+    getMainPanel().add(labelMenuName, menuConstraints);
 
     menuConstraints.gridy = 1;
     menuConstraints.weighty = 10;
     buttonPanel = generateButtonPanel();
-    currentPanel.add(buttonPanel, menuConstraints);
+    getMainPanel().add(buttonPanel, menuConstraints);
 
     menuConstraints.gridy = 2;
     menuConstraints.weighty = 2;
-    currentPanel.add(new JLabel(), menuConstraints);
-  }
-
-  /**
-   * Update the font of the current labelMenuName
-   */
-  protected void updateMenuName() {
-    updateLabelFont(labelMenuName);
+    getMainPanel().add(new JLabel(), menuConstraints);
   }
 
   /**
@@ -282,9 +275,6 @@ public class SwingMenuView<M extends SwingMenuModel> extends SwingView<M> {
   public void update() {
     super.update();
     updateButtons();
-    updateMenuName();
-    currentPanel.setBackground(
-            DisplayConfiguration.getDefaultDisplay().getCurrentPalette().getBackgroundColor1());
   }
 
 
