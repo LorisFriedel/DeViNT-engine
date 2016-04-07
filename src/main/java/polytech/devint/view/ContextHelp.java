@@ -34,7 +34,7 @@ public class ContextHelp {
    * @param detailedText      detailed help text of the context
    * @param detailedAudioHelp the audio of the detailed help (a voice recording for example)
    */
-  private ContextHelp(String text, Sound audioHelp, String detailedText, Sound detailedAudioHelp) {
+  public ContextHelp(String text, Sound audioHelp, String detailedText, Sound detailedAudioHelp) {
     this.text = Optional.ofNullable(text);
     this.audio = Optional.ofNullable(audioHelp);
     this.detailedText = Optional.ofNullable(detailedText);
