@@ -291,7 +291,16 @@ public class SwingMenuView<M extends SwingMenuModel> extends SwingView<M> {
     } else {
       handleButtonChange(direction, buttons);
     }
+    enunciateButton();
     update();
+  }
+
+  private void enunciateButton() {
+    if(currentSelectedButton.getEnunciation().isPresent()) {
+      soundPlayer().forcePlay(currentSelectedButton.getEnunciation().get());
+    } else {
+      // TODO voice synthesis
+    }
   }
 
   /// TODO Review this !!!
