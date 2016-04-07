@@ -177,7 +177,7 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
    */
   @Override
   public void update() {
-    if(isAutoUpdateActivated()) {
+    if(isAutoUpdateEnabled()) {
       updateComponents();
     }
     frame.repaint();
@@ -186,7 +186,7 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
   /**
    * @return True is the auto update system is currently active, false otherwise.
    */
-  public boolean isAutoUpdateActivated() {
+  public boolean isAutoUpdateEnabled() {
     return autoUpdate;
   }
 
@@ -196,7 +196,7 @@ public abstract class SwingView<M extends Model> extends DevintView<M> {
    * This system automatically update JLabel and JPanel font and color according
    * to the current display configuration of the program.
    */
-  public void activateAutoUpdate() {
+  public void enableAutoUpdate() {
     autoUpdate = true;
   }
 

@@ -110,4 +110,18 @@ public class Observable {
   public int countObservers() {
     return observers.size();
   }
+
+  /**
+   * Remove all link between this on the given observable.
+   * The two object will no longer be observer of each other.
+   *
+   * @param o1 Observable to remove its link with the current object.
+   */
+  public void unlink(Observable o1) {
+    if(o1 == null) {
+      return;
+    }
+    o1.deleteObserver(this);
+    this.deleteObserver(o1);
+  }
 }

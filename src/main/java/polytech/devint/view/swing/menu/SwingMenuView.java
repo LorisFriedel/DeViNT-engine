@@ -32,6 +32,7 @@ public class SwingMenuView<M extends SwingMenuModel> extends SwingView<M> {
   protected final GridBagConstraints buttonConstraints;
 
   protected Button currentSelectedButton;
+  protected JPanel headerPanel;
   protected JLabel labelMenuName;
   protected JPanel buttonPanel;
   protected JPanel buttonSubPanel;
@@ -128,12 +129,14 @@ public class SwingMenuView<M extends SwingMenuModel> extends SwingView<M> {
     getMainPanel().removeAll();
     getMainPanel().setLayout(layoutManager);
 
-    // Adding the menuName?
+    headerPanel = new JPanel();
+    headerPanel.setLayout(new GridLayout());
 
     menuConstraints.gridy = 0;
     menuConstraints.weighty = 3;
     labelMenuName = generateLabelMenuName();
-    getMainPanel().add(labelMenuName, menuConstraints);
+    headerPanel.add(labelMenuName);
+    getMainPanel().add(headerPanel, menuConstraints);
 
     menuConstraints.gridy = 1;
     menuConstraints.weighty = 10;
@@ -322,5 +325,9 @@ public class SwingMenuView<M extends SwingMenuModel> extends SwingView<M> {
 
   public Button getCurrentSelectedButton() {
     return currentSelectedButton;
+  }
+
+  public JPanel getHeaderPanel() {
+    return headerPanel;
   }
 }
