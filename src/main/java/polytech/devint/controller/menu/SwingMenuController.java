@@ -6,10 +6,11 @@ import polytech.devint.event.EventHandler;
 import polytech.devint.event.basic.DownEvent;
 import polytech.devint.event.basic.EnterEvent;
 import polytech.devint.event.basic.UpEvent;
-import polytech.devint.model.menu.ButtonTriggeredEvent;
 import polytech.devint.model.menu.SwingMenuModel;
 import polytech.devint.view.View;
+import polytech.devint.view.swing.menu.Button;
 import polytech.devint.view.swing.menu.SwingMenuView;
+import polytech.devint.view.swing.menu.event.ButtonTriggeredEvent;
 
 /**
  * @author Loris Friedel
@@ -42,13 +43,17 @@ public class SwingMenuController<M extends SwingMenuModel> extends DevintControl
   public final void onEnter(EnterEvent event) {
     getViews().stream()
             .filter(v -> v.isActive() && v.getCurrentSelectedButton() != null)
-            .forEach(v -> notifySelf(new ButtonTriggeredEvent(v.getCurrentSelectedButton())));
+            .forEach(v -> triggerButton(v.getCurrentSelectedButton()));
   }
 
   @EventHandler
   public final void onButtonTrigger(ButtonTriggeredEvent event) {
-    if (event.getButton() != null) {
-      event.getButton().getAction().run();
+    triggerButton(event.getButton());
+  }
+
+  private void triggerButton(Button button) {
+    if (button!= null) {
+      new Thread(button.getAction()).start();
     }
   }
 }

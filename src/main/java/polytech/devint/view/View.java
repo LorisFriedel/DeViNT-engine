@@ -2,6 +2,7 @@ package polytech.devint.view;
 
 import polytech.devint.controller.Controller;
 import polytech.devint.event.Event;
+import polytech.devint.event.Observable;
 import polytech.devint.model.Model;
 
 /**
@@ -12,25 +13,17 @@ import polytech.devint.model.Model;
  * @author Loris Friedel
  * @author Gunther Jungbluth (gunther.jungbluth.poirier@gmail.com)
  */
-public abstract class View<M extends Model> {
+public abstract class View<M extends Model> extends Observable {
 
   protected Controller<M, ?> controller;
   private boolean isActive;
-
-  /**
-   * This attribute is not updated if there is a change of model
-   * in the controller that is linked to this view   *
-   */
-  @Deprecated
-  protected M model;
-
 
   /**
    * Instantiates an empty view with no controller The controller and model of the view will be
    * associated when the view is added to the controller
    */
   public View() {
-
+    super();
   }
 
   /**
@@ -62,31 +55,24 @@ public abstract class View<M extends Model> {
   public abstract void destroyContent();
 
   /**
-   * Makes the view being an observer of the associated model
+   * Makes the view being an observer of the associated model.
    */
   private void register() {
-    getLinkedModel().getEventManager().registerObserver(this);
+    getLinkedModel().addObserver(this);
   }
 
   /**
-   * Makes the view not being an observer of the associated model anymore
+   * Makes the view not being an observer of the associated model anymore.
    */
   private void unregister() {
-    getLinkedModel().getEventManager().removeObserver(this);
+    getLinkedModel().deleteObserver(this);
   }
 
   /**
-   * @return the controller associated to the current view
-   */
-  public Controller<M, ?> getController() {
-    return controller;
-  }
-
-  /**
-   * @return the model associated to the current view
+   * @return The model associated to the current view.
    */
   public M getLinkedModel() {
-    return controller.getModel();
+    return getController().getModel();
   }
 
   /**
@@ -95,8 +81,18 @@ public abstract class View<M extends Model> {
    * @param controller new controller that will be connected to this view
    */
   public void setController(Controller<M, ?> controller) {
+    if(getController() != null) {
+      deleteObserver(getController());
+    }
     this.controller = controller;
-    this.model = controller.getModel();
+    addObserver(controller);
+  }
+
+  /**
+   * @return The controller associated to the current view.
+   */
+  public Controller<M, ?> getController() {
+    return controller;
   }
 
   /**
@@ -112,21 +108,14 @@ public abstract class View<M extends Model> {
   }
 
   /**
+   * WARNING, read carefully.
    * Notify the controller that is currently attached to this view.
    * This method does the exact same thing as the <code>notifyObserver(Event event)</code> method.
+   * The given event is sent to every observer of this view, CONTROLLER OR NOT.
    *
-   * @param event Event that will be sent to the controller of this view
+   * @param event Event that will be sent to the controller (and other observer) of this view
    */
   public void notifyController(Event event) {
-    notifyObserver(event);
-  }
-
-  /**
-   * Notify all object that are currently observing this view.
-   *
-   * @param event Event that will be sent to the controller of this view.
-   */
-  public void notifyObserver(Event event) {
-    getController().getEventManager().notify(event);
+    notifyObservers(event);
   }
 }

@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used to create method event handlers
+ * Used to create method event handlers.
  *
  * @author Günther Jungbluth (gunther.jungbluth.poirier@gmail.com)
  */
