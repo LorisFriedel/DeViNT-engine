@@ -56,9 +56,15 @@ public class SoundPlayer extends SchedulerReady {
     }
   }
 
+  /**
+   * Tell the sound player that the given sound is the current sound being played.
+   * @param sound Sound currently being played.
+   */
   private void setCurrent(Sound sound) {
     this.currentSound = sound;
   }
+
+  // TODO find clearer name
 
   /////// SIMPLE PLAY ///////
 
@@ -201,7 +207,7 @@ public class SoundPlayer extends SchedulerReady {
   /**
    * Play the next sound in the playlist
    */
-  void nextSound() {
+  private void nextSound() {
     if (soundQueue.isEmpty() && onQueueEnd != null) {
       new Thread(onQueueEnd).start();
       return;
