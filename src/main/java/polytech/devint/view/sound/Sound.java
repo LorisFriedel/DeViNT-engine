@@ -19,9 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Represent a sound
+ * Represent a sound.
  * The sound data are stored (raw) such as it is faster to play it again,
  * it is not reloaded each play.
+ * Support only wav sound.
  * To play a sound, a sound player must be used.
  *
  * @author Loris Friedel
@@ -30,12 +31,12 @@ public class Sound extends Identifiable<Integer> {
 
   private static int nextId = 0;
 
-  String name;
-  AudioFormat format;
-  SourceDataLine dataLine;
-  byte[] soundData;
-  int dataLength;
-  long duration;
+  private String name;
+  private AudioFormat format;
+  private SourceDataLine dataLine;
+  private byte[] soundData;
+  private int dataLength;
+  private long duration;
 
   private static final List<String> WAV_MIMETYPES =
           Arrays.asList("audio/x-wav", "audio/vnd.wave", "audio/wav", "audio/wave");
