@@ -111,7 +111,7 @@ public class SwingMenuView<M extends SwingMenuModel> extends SwingView<M> {
 
     // Draw the menu
     drawMenu();
-    changeButtonSelection(Direction.DOWN);
+    //changeButtonSelection(Direction.DOWN);
     update();
   }
 
