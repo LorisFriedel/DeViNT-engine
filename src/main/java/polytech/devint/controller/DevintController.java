@@ -15,8 +15,10 @@ import java.util.List;
 /**
  * Represents a specific controller for DeViNT developers.
  * All mandatory functionality are present.
- * This controller need to have registered at least one main view (using the <code>addMainView(View v)</code> method.
+ * This controller need to have registered at least one main view (using the <code>registerMainView(View v)</code> method.
  * The palette and font change need to be implemented in every view to work.
+ *
+ * A default behavior of the escape key is present. It may be overridden (override onEscape method).
  *
  * @param <M> Model that the controller can manage.
  * @author Loris Friedel
@@ -25,7 +27,7 @@ public abstract class DevintController<M extends Model, V extends DevintView<M>>
         extends Controller<M, V> {
 
   private static List<View<?>> mainViews = new ArrayList<>();
-  public static final String SWING_CONFIG_KEY = "SWING";
+  public static final String SWING_CONFIG_KEY = "SWING_DEFAULT";
 
   public DevintController(M model, InputConfiguration inputConfiguration) {
     super(model, inputConfiguration);
@@ -37,7 +39,7 @@ public abstract class DevintController<M extends Model, V extends DevintView<M>>
    * @param model Model that the controller will control
    */
   public DevintController(M model) {
-    this(model, new InputConfiguration().addConfig("SWING", new SwingInputConfiguration()));
+    this(model, new InputConfiguration().addConfig(SWING_CONFIG_KEY, new SwingInputConfiguration()));
   }
 
   @EventHandler
@@ -62,8 +64,16 @@ public abstract class DevintController<M extends Model, V extends DevintView<M>>
     updateViews();
   }
 
+
+  /**
+   * Method called when the escape key is pressed.
+   * The default behavior of this method is to destroy the current views
+   * and initialize all registered main views.
+   *
+   * @param escapeEvent Event triggered when the escape key is being pressed.
+   */
   @EventHandler
-  public final void onEscape(final EscapeEvent escapeEvent) {
+  public void onEscape(final EscapeEvent escapeEvent) {
     if (!mainViews.isEmpty()) {
       destroyViews();
       mainViews.forEach(View::init);
@@ -76,7 +86,16 @@ public abstract class DevintController<M extends Model, V extends DevintView<M>>
    *
    * @param view View to be added to the list of main views.
    */
-  public static void addMainView(View<?> view) {
+  public static void registerMainView(View<?> view) {
     DevintController.mainViews.add(view);
+  }
+
+  /**
+   * Remove a main view in the devint controller class.
+   *
+   * @param view View to be removed to the list of main views.
+   */
+  public static void unregisterMainView(View<?> view) {
+    DevintController.mainViews.remove(view);
   }
 }

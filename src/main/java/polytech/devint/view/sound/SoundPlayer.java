@@ -207,7 +207,7 @@ public class SoundPlayer extends SchedulerReady {
   /**
    * Play the next sound in the playlist
    */
-  private void nextSound() {
+  void nextSound() {
     if (soundQueue.isEmpty() && onQueueEnd != null) {
       new Thread(onQueueEnd).start();
       return;
