@@ -4,6 +4,8 @@ package polytech.devint.util.file;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.*;
+import java.net.JarURLConnection;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -40,6 +42,23 @@ public final class ResourceLoader {
     while (proper.startsWith("/")) {
       proper = proper.substring(1, proper.length());
     }
+
+    /*
+    try {
+      getResource(proper);
+    } catch (IllegalArgumentException e) {
+      try {
+        final URL jarUrl = new URL(proper);
+        final JarURLConnection connection;
+        connection = (JarURLConnection) jarUrl.openConnection();
+        final URL url = connection.getJarFileURL();
+        return url.getFile();
+      } catch (IOException e2) {
+        throw new ResourceFileErrorException(e2);
+      }
+    }
+    */
+
     return proper;
   }
 
@@ -76,7 +95,7 @@ public final class ResourceLoader {
    * @return An instance of the desired file.
    */
   public final File loadFileFrom(String folder, String name) {
-    return loadFileFrom(System.class.getResource(concat(folder, name)));
+    return loadFileFrom(getResource(concat(folder, name)));
   }
 
   /**
@@ -103,9 +122,10 @@ public final class ResourceLoader {
    */
   public final File loadFileFrom(URL url) {
     if (url == null) {
-      throw new ResourceFileErrorException();
+      throw new ResourceFileErrorException("URL NULL");
     }
     try {
+      System.out.println(url.toURI());
       return new File(url.toURI());
     } catch (URISyntaxException e) {
       throw new ResourceFileErrorException(e);
@@ -124,7 +144,7 @@ public final class ResourceLoader {
     /* Deprecated check
     if (files.isEmpty()) { throw new ResourceFileErrorException(); } */
 
-    return loadAllFilesFrom(System.class.getResource(rectify(resourceFolderPath)));
+    return loadAllFilesFrom(getResource(rectify(resourceFolderPath)));
   }
 
   /**
@@ -161,5 +181,9 @@ public final class ResourceLoader {
    */
   public final List<File> loadAllFilesFrom(URL url) {
     return loadAllFilesFrom(url, f -> true);
+  }
+
+  private URL getResource(String path) {
+    return getClass().getClassLoader().getResource(path);
   }
 }
