@@ -76,7 +76,7 @@ public final class ResourceLoader {
    * @return An instance of the desired file.
    */
   public final File loadFileFrom(String folder, String name) {
-    return loadFileFrom(getClass().getClassLoader().getResource(concat(folder, name)));
+    return loadFileFrom(System.class.getResource(concat(folder, name)));
   }
 
   /**
@@ -124,7 +124,7 @@ public final class ResourceLoader {
     /* Deprecated check
     if (files.isEmpty()) { throw new ResourceFileErrorException(); } */
 
-    return loadAllFilesFrom(getClass().getClassLoader().getResource(rectify(resourceFolderPath)));
+    return loadAllFilesFrom(System.class.getResource(rectify(resourceFolderPath)));
   }
 
   /**
