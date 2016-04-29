@@ -4,8 +4,6 @@ package polytech.devint.util.file;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.*;
-import java.net.JarURLConnection;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -13,8 +11,10 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -26,11 +26,11 @@ public final class ResourceLoader {
     // does nothing
   }
 
-  private String concat(String folder, String name) {
+  private String concat(final String folder, final String name) {
     return rectify(folder) + "/" + rectify(name);
   }
 
-  private String rectify(String str) {
+  private String rectify(final String str) {
     if (!isValidPath(str)) {
       throw new ResourceFileErrorException("Invalid path.");
     }
@@ -43,26 +43,10 @@ public final class ResourceLoader {
       proper = proper.substring(1, proper.length());
     }
 
-    /*
-    try {
-      getResource(proper);
-    } catch (IllegalArgumentException e) {
-      try {
-        final URL jarUrl = new URL(proper);
-        final JarURLConnection connection;
-        connection = (JarURLConnection) jarUrl.openConnection();
-        final URL url = connection.getJarFileURL();
-        return url.getFile();
-      } catch (IOException e2) {
-        throw new ResourceFileErrorException(e2);
-      }
-    }
-    */
-
     return proper;
   }
 
-  private static boolean isValidPath(String path) {
+  private static boolean isValidPath(final String path) {
     try {
       Paths.get(path);
     } catch (InvalidPathException | NullPointerException ex) {
@@ -72,20 +56,20 @@ public final class ResourceLoader {
   }
 
   /**
-   * Load the image icon from the given folder and with the given name
+   * Load the image icon from the given folder and with the given name.
    *
-   * @param folder folder (in the resource directory) that contains the file to load
-   * @param name   name of the image file to load
-   * @return an instance of the image icon corresponding to the loaded image file
+   * @param folder Folder (in the resource directory) that contains the file to load.
+   * @param name   Name of the image file to load.
+   * @return An instance of the image icon corresponding to the loaded image file.
+   * @throws ResourceFileErrorException If the file cannot be loaded.
    */
-  public final ImageIcon loadImageIcon(String folder, String name) {
+  public final ImageIcon loadImageIcon(final String folder, final String name) {
     try {
       return new ImageIcon(ImageIO.read(loadFileFrom(folder, name)));
     } catch (IOException e) {
       throw new ResourceFileErrorException(e);
     }
   }
-
 
   /**
    * Load the file that is in the given folder with the given name.
@@ -94,9 +78,15 @@ public final class ResourceLoader {
    * @param name   Name of the file we want to load.
    * @return An instance of the desired file.
    */
-  public final File loadFileFrom(String folder, String name) {
-    return loadFileFrom(getResource(concat(folder, name)));
+  public final File loadFileFrom(final String folder, final String name) {
+    String completePath = concat(folder, name);
+    try {
+      return loadFileFrom(getResource(completePath));
+    } catch (Exception e) {
+      return getFileFromIs(completePath);
+    }
   }
+
 
   /**
    * Load the file input stream from the file
@@ -119,13 +109,13 @@ public final class ResourceLoader {
    *
    * @param url Url of a folder from which we want to load file.
    * @return A list of all loaded file (and only file, not folder) from the pointed folder.
+   * @throws ResourceFileErrorException If the file cannot be loaded.
    */
-  public final File loadFileFrom(URL url) {
+  public final File loadFileFrom(final URL url) {
     if (url == null) {
       throw new ResourceFileErrorException("URL NULL");
     }
     try {
-      System.out.println(url.toURI());
       return new File(url.toURI());
     } catch (URISyntaxException e) {
       throw new ResourceFileErrorException(e);
@@ -138,13 +128,18 @@ public final class ResourceLoader {
    * An exception is thrown if the given path doesn't lead to a folder.
    *
    * @param resourceFolderPath Path of the resource folder in which the file we want to load are.
-   * @return A list of file, non-empty, that were in the folder pointed by the given path.
+   * @return A list of file, that were in the folder pointed by the given path.
    */
-  public List<File> loadAllFilesFrom(String resourceFolderPath) {
+  public final List<File> loadAllFilesFrom(final String resourceFolderPath) {
     /* Deprecated check
     if (files.isEmpty()) { throw new ResourceFileErrorException(); } */
 
-    return loadAllFilesFrom(getResource(rectify(resourceFolderPath)));
+    try {
+      return loadAllFilesFrom(getResource(rectify(resourceFolderPath)));
+    } catch (Exception e) {
+      final File folder = getFileFromIs(resourceFolderPath);
+      return Arrays.asList(folder.listFiles()).stream().filter(File::isFile).collect(Collectors.toList());
+    }
   }
 
   /**
@@ -155,8 +150,9 @@ public final class ResourceLoader {
    * @param url       Url of a folder from which we want to load file.
    * @param predicate Predicate that will filter files.
    * @return A list of all loaded file (and only file, not folder) from the pointed folder.
+   * @throws ResourceFileErrorException If the file cannot be loaded.
    */
-  public final List<File> loadAllFilesFrom(URL url, Predicate<File> predicate) {
+  public final List<File> loadAllFilesFrom(final URL url, final Predicate<File> predicate) {
     if (url == null) {
       throw new ResourceFileErrorException();
     }
@@ -179,11 +175,39 @@ public final class ResourceLoader {
    * @param url Url of a folder from which we want to load file
    * @return A list of all loaded file (and only file, not folder) from the pointed folder
    */
-  public final List<File> loadAllFilesFrom(URL url) {
+  public final List<File> loadAllFilesFrom(final URL url) {
     return loadAllFilesFrom(url, f -> true);
   }
 
-  private URL getResource(String path) {
+  /**
+   * Convert the given string path to a usable URL
+   *
+   * @param path String relative path of the desired resource.
+   * @return The URL of the desired resource..
+   */
+  private URL getResource(final String path) {
     return getClass().getClassLoader().getResource(path);
+  }
+
+  /**
+   * Load a File from the given path using an input stream conversion.
+   *
+   * @param path Path of the desired file.
+   * @return A File object that retrieved from the given resource path.
+   * @throws ResourceFileErrorException If the file cannot be loaded.
+   */
+  private File getFileFromIs(final String path) {
+    try {
+      final File result =
+              new InputStreamToFile(getClass().getClassLoader().getResourceAsStream(path))
+                      .convert()
+                      .getFile();
+      if (result == null) {
+        throw new ResourceFileErrorException("NULL file result from input stream");
+      }
+      return result;
+    } catch (IOException e) {
+      throw new ResourceFileErrorException(e);
+    }
   }
 }
