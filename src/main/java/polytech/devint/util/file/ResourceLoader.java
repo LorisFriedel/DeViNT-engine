@@ -26,10 +26,23 @@ public final class ResourceLoader {
     // does nothing
   }
 
+  /**
+   * Concatenates
+   *
+   * @param folder
+   * @param name
+   * @return
+   */
   private String concat(final String folder, final String name) {
     return rectify(folder) + "/" + rectify(name);
   }
 
+  /**
+   * Rectifies the given string to match the path pattern properly.
+   *
+   * @param str String to be rectified.
+   * @return A new String meant to be a proper path.
+   */
   private String rectify(final String str) {
     if (!isValidPath(str)) {
       throw new ResourceFileErrorException("Invalid path.");
@@ -46,6 +59,13 @@ public final class ResourceLoader {
     return proper;
   }
 
+  /**
+   * Check if the given string, that should represents a path, is a valid path.
+   * I.e. the given path is well formed and math the files pattern.
+   *
+   * @param path Path we want to check its validity.
+   * @return True if the given path is correct, false otherwise.
+   */
   private static boolean isValidPath(final String path) {
     try {
       Paths.get(path);
@@ -56,7 +76,7 @@ public final class ResourceLoader {
   }
 
   /**
-   * Load the image icon from the given folder and with the given name.
+   * Loads the image icon from the given folder and with the given name.
    *
    * @param folder Folder (in the resource directory) that contains the file to load.
    * @param name   Name of the image file to load.
@@ -72,7 +92,7 @@ public final class ResourceLoader {
   }
 
   /**
-   * Load the file that is in the given folder with the given name.
+   * Loads the file that is in the given folder with the given name.
    *
    * @param folder Folder in which the file is.
    * @param name   Name of the file we want to load.
@@ -83,13 +103,15 @@ public final class ResourceLoader {
     try {
       return loadFileFrom(getResource(completePath));
     } catch (Exception e) {
+      // Try to load the file from input stream
+      // if the previous loading method has failed
       return getFileFromIs(completePath);
     }
   }
 
 
   /**
-   * Load the file input stream from the file
+   * Loads the file input stream from the file
    * that is in the given folder and that has the given name.
    *
    * @param folder Folder in which the file is.
@@ -105,7 +127,7 @@ public final class ResourceLoader {
   }
 
   /**
-   * Load all file (and only file, not folder) that are in the folder pointed by the given URL
+   * Loads all file (and only file, not folder) that are in the folder pointed by the given URL
    *
    * @param url Url of a folder from which we want to load file.
    * @return A list of all loaded file (and only file, not folder) from the pointed folder.
@@ -123,7 +145,7 @@ public final class ResourceLoader {
   }
 
   /**
-   * Load all file (and only file, not folder) from the given resource folder path
+   * Loads all file (and only file, not folder) from the given resource folder path
    * and check if there is at least one file loader.
    * An exception is thrown if the given path doesn't lead to a folder.
    *
@@ -138,12 +160,14 @@ public final class ResourceLoader {
       return loadAllFilesFrom(getResource(rectify(resourceFolderPath)));
     } catch (Exception e) {
       final File folder = getFileFromIs(resourceFolderPath);
-      return Arrays.asList(folder.listFiles()).stream().filter(File::isFile).collect(Collectors.toList());
+      return Arrays.asList(folder.listFiles()).stream()
+              .filter(File::isFile)
+              .collect(Collectors.toList());
     }
   }
 
   /**
-   * Load all file (and only file, not folder) that are in the folder pointed by the given URL
+   * Loads all file (and only file, not folder) that are in the folder pointed by the given URL
    * and match the given predicate.
    * An exception is thrown if the given path doesn't lead to a folder.
    *
@@ -170,7 +194,7 @@ public final class ResourceLoader {
   }
 
   /**
-   * Load all file (and only file, not folder) that are in the folder pointed by the given URL
+   * Loads all file (and only file, not folder) that are in the folder pointed by the given URL
    *
    * @param url Url of a folder from which we want to load file
    * @return A list of all loaded file (and only file, not folder) from the pointed folder
@@ -190,7 +214,7 @@ public final class ResourceLoader {
   }
 
   /**
-   * Load a File from the given path using an input stream conversion.
+   * Loads a File from the given path using an input stream conversion.
    *
    * @param path Path of the desired file.
    * @return A File object that retrieved from the given resource path.
