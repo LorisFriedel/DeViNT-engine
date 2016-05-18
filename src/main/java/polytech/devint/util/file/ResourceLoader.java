@@ -151,7 +151,9 @@ public final class ResourceLoader {
    *
    * @param resourceFolderPath Path of the resource folder in which the file we want to load are.
    * @return A list of file, that were in the folder pointed by the given path.
+   * @deprecated Does not work when using resources from an executable jar.
    */
+  @Deprecated
   public final List<File> loadAllFilesFrom(final String resourceFolderPath) {
     /* Deprecated check
     if (files.isEmpty()) { throw new ResourceFileErrorException(); } */
@@ -174,8 +176,10 @@ public final class ResourceLoader {
    * @param url       Url of a folder from which we want to load file.
    * @param predicate Predicate that will filter files.
    * @return A list of all loaded file (and only file, not folder) from the pointed folder.
-   * @throws ResourceFileErrorException If the file cannot be loaded.
+   * @throws ResourceFileErrorException If an error occurred when trying to load all files.
+   * @deprecated Does not work when using resources from an executable jar.
    */
+  @Deprecated
   public final List<File> loadAllFilesFrom(final URL url, final Predicate<File> predicate) {
     if (url == null) {
       throw new ResourceFileErrorException();
@@ -198,7 +202,9 @@ public final class ResourceLoader {
    *
    * @param url Url of a folder from which we want to load file
    * @return A list of all loaded file (and only file, not folder) from the pointed folder
+   * @deprecated Does not work when using resources from an executable jar.
    */
+  @Deprecated
   public final List<File> loadAllFilesFrom(final URL url) {
     return loadAllFilesFrom(url, f -> true);
   }
